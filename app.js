@@ -39,6 +39,10 @@
   // History modal state
   let cachedHistoryList = [];
 
+  // Dedicated Standalone Review Viewer State
+  let currentReviewRecord = null;
+  let reviewOnlyWrong = false;
+
   function loadState() {
     try {
       return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
@@ -112,6 +116,18 @@
   const myHistoryModal = $('myHistoryModal');
   const historyCloseBtn = $('historyCloseBtn');
   const historyModalBody = $('historyModalBody');
+
+  // Dedicated Review Viewer DOM
+  const dedicatedReviewViewer = $('dedicatedReviewViewer');
+  const reviewViewerBackBtn = $('reviewViewerBackBtn');
+  const reviewViewerCloseBtn = $('reviewViewerCloseBtn');
+  const reviewViewerTitle = $('reviewViewerTitle');
+  const reviewViewerMeta = $('reviewViewerMeta');
+  const reviewFilterAllBtn = $('reviewFilterAllBtn');
+  const reviewFilterWrongBtn = $('reviewFilterWrongBtn');
+  const reviewWrongCountBadge = $('reviewWrongCountBadge');
+  const reviewViewerNewTabBtn = $('reviewViewerNewTabBtn');
+  const reviewViewerBody = $('reviewViewerBody');
 
   // ---------- Helpers ----------
   const exam = () => window.EXAM_DATA[currentExamIndex];
@@ -296,6 +312,33 @@
       });
     }
 
+    // Dedicated Review Viewer Events
+    if (reviewViewerBackBtn) {
+      reviewViewerBackBtn.addEventListener('click', closeStandaloneReviewViewer);
+    }
+    if (reviewViewerCloseBtn) {
+      reviewViewerCloseBtn.addEventListener('click', closeStandaloneReviewViewer);
+    }
+    if (reviewFilterAllBtn) {
+      reviewFilterAllBtn.addEventListener('click', () => {
+        reviewOnlyWrong = false;
+        reviewFilterAllBtn.classList.add('active');
+        reviewFilterWrongBtn.classList.remove('active');
+        renderReviewQuestions();
+      });
+    }
+    if (reviewFilterWrongBtn) {
+      reviewFilterWrongBtn.addEventListener('click', () => {
+        reviewOnlyWrong = true;
+        reviewFilterWrongBtn.classList.add('active');
+        reviewFilterAllBtn.classList.remove('active');
+        renderReviewQuestions();
+      });
+    }
+    if (reviewViewerNewTabBtn) {
+      reviewViewerNewTabBtn.addEventListener('click', openReviewInNewWindow);
+    }
+
     // Auth State Listener
     if (window.FirebaseManager) {
       window.FirebaseManager.onAuthChange(user => {
@@ -305,13 +348,17 @@
 
     window.addEventListener('keydown', e => {
       if (e.key === 'Escape') {
+        if (dedicatedReviewViewer && dedicatedReviewViewer.classList.contains('active')) {
+          closeStandaloneReviewViewer();
+          return;
+        }
         answersModal.classList.remove('active');
         myHistoryModal.classList.remove('active');
         closeResultModal();
         return;
       }
       if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
-      if (resultModal.classList.contains('active') || answersModal.classList.contains('active') || myHistoryModal.classList.contains('active')) return;
+      if (resultModal.classList.contains('active') || answersModal.classList.contains('active') || myHistoryModal.classList.contains('active') || (dedicatedReviewViewer && dedicatedReviewViewer.classList.contains('active'))) return;
       if (e.key === 'ArrowRight') goToPage(currentPage + 1);
       else if (e.key === 'ArrowLeft') goToPage(currentPage - 1);
     });
@@ -867,33 +914,236 @@
     html += `</div>`;
     historyModalBody.innerHTML = html;
 
-    // Attach card click event to restore exam
+    // Attach card click event to open dedicated review viewer (does not overwrite main test state)
     historyModalBody.querySelectorAll('[data-restore-exam]').forEach(card => {
       card.addEventListener('click', () => {
         const code = card.getAttribute('data-restore-exam');
         const targetRecord = cachedHistoryList.find(h => h.examCode === code);
-        const idx = window.EXAM_DATA.findIndex(e => e.code === code);
-        if (idx !== -1) {
-          currentExamIndex = idx;
-          examSelect.value = idx;
-          if (targetRecord && targetRecord.answers) {
-            userAnswers[code] = Object.assign({}, targetRecord.answers);
-          }
-          submitted[code] = true;
-          saveState();
-          refreshExamSelectLabel();
-          currentPage = 1;
-          setSubjectFilter('all');
-          myHistoryModal.classList.remove('active');
-          renderApp();
-
-          examModeHint.className = 'exam-mode-hint done';
-          examModeHint.innerHTML = `📂 <span><b>[${targetRecord ? targetRecord.examDate : ''} 풀이 복원]</b> 총점 <b>${targetRecord ? targetRecord.score : ''}점</b> (${targetRecord && targetRecord.passed ? '합격 🎉' : '불합격 😢'}, 정답 ${targetRecord ? targetRecord.correctCount : 0}개 / 오답 ${targetRecord ? targetRecord.wrongCount : 0}개) — 이전에 풀었던 답안과 채점 결과가 그대로 복원되었습니다.</span>`;
-
-          window.scrollTo({ top: 120, behavior: 'smooth' });
+        if (targetRecord) {
+          openStandaloneReviewViewer(targetRecord);
         }
       });
     });
+  }
+
+  // ---------- Dedicated Standalone Review Viewer ----------
+  function openStandaloneReviewViewer(record) {
+    if (!record) return;
+    currentReviewRecord = record;
+    reviewOnlyWrong = false;
+
+    const targetExam = window.EXAM_DATA.find(e => e.code === record.examCode) || window.EXAM_DATA[0];
+    const wrongCount = record.wrongCount !== undefined ? record.wrongCount : (50 - (record.correctCount || 0));
+
+    reviewViewerTitle.textContent = `📅 ${record.examDate} 풀이 결과`;
+    reviewViewerMeta.textContent = `총점 ${record.score}점 (${record.passed ? '🎉 합격' : '😢 불합격'}) · 정답 ${record.correctCount} / 오답 ${record.wrongCount} / 미응답 ${record.unansweredCount}`;
+    if (reviewWrongCountBadge) reviewWrongCountBadge.textContent = String(wrongCount);
+
+    if (reviewFilterAllBtn) reviewFilterAllBtn.classList.add('active');
+    if (reviewFilterWrongBtn) reviewFilterWrongBtn.classList.remove('active');
+
+    renderReviewQuestions();
+
+    myHistoryModal.classList.remove('active');
+    dedicatedReviewViewer.classList.add('active');
+    dedicatedReviewViewer.scrollTop = 0;
+  }
+
+  function closeStandaloneReviewViewer() {
+    dedicatedReviewViewer.classList.remove('active');
+    // Return smoothly to history modal
+    myHistoryModal.classList.add('active');
+  }
+
+  function renderReviewQuestions() {
+    if (!currentReviewRecord) return;
+    const targetExam = window.EXAM_DATA.find(e => e.code === currentReviewRecord.examCode) || window.EXAM_DATA[0];
+    const userAns = currentReviewRecord.answers || {};
+
+    let list = targetExam.questions || [];
+    if (reviewOnlyWrong) {
+      list = list.filter(q => userAns[q.num] !== q.answerNum);
+    }
+
+    if (list.length === 0) {
+      reviewViewerBody.innerHTML = `
+        <div style="padding:60px 20px; text-align:center; color:var(--text-muted); background:#fff; border-radius:12px; border:1px solid var(--border-card);">
+          <div style="font-size:42px; margin-bottom:10px;">🎉</div>
+          <p style="font-size:16px; font-weight:800; color:#10b981;">틀린 문제가 없습니다!</p>
+          <p style="font-size:13.5px; color:#64748b; margin-top:4px;">해당 회차는 모든 문제를 맞추셨습니다.</p>
+        </div>`;
+      return;
+    }
+
+    let html = '';
+    list.forEach(q => {
+      const chosen = userAns[q.num];
+      const isAnswered = chosen !== undefined;
+      const isCorrect = isAnswered && chosen === q.answerNum;
+      const statusCls = !isAnswered ? 'is-unanswered' : (isCorrect ? 'is-correct' : 'is-wrong');
+      const statusBadge = !isAnswered
+        ? '<span class="q-status-badge unanswered">⚪ 미응답</span>'
+        : (isCorrect ? '<span class="q-status-badge correct">✔️ 정답 (+2점)</span>' : '<span class="q-status-badge wrong">❌ 오답</span>');
+
+      const myChoiceText = isAnswered ? `${SYMBOLS[chosen - 1]} ${q.options[chosen - 1] || ''}` : '<span style="color:#94a3b8;">미응답</span>';
+      const realAnswerText = `${q.answer} ${q.options[q.answerNum - 1] || ''}`;
+
+      html += `
+        <div class="review-card ${statusCls}">
+          <div class="review-card-header">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span class="q-number-badge">${pad2(q.num)}</span>
+              <span class="q-subject-badge">${q.subject}</span>
+              ${statusBadge}
+            </div>
+            <div style="font-size:12px; color:var(--text-muted); font-weight:600;">배점: 2점</div>
+          </div>
+
+          <div class="review-card-stem">${q.question}</div>
+
+          ${q.image ? `<div class="q-image-box"><img src="${q.image}" alt="Q${q.num} 지문 이미지" loading="lazy"></div>` : ''}
+
+          <div style="margin-bottom:12px;">
+            ${q.options.map((optText, i) => {
+              const optNum = i + 1;
+              let optCls = 'review-option-item';
+              let optTag = '';
+              if (optNum === q.answerNum) {
+                optCls += ' answer-target';
+                optTag = '<span style="margin-left:auto; font-size:11px; font-weight:800; color:#166534; background:#dcfce7; padding:2px 6px; border-radius:4px;">🎯 정답</span>';
+              }
+              if (isAnswered && optNum === chosen) {
+                if (isCorrect) {
+                  optCls += ' choice-correct';
+                } else {
+                  optCls += ' choice-wrong';
+                  optTag = '<span style="margin-left:auto; font-size:11px; font-weight:800; color:#991b1b; background:#fee2e2; padding:2px 6px; border-radius:4px;">내 선택 ❌</span>';
+                }
+              }
+              return `
+                <div class="${optCls}">
+                  <span style="font-weight:800; font-size:14px; color:var(--primary);">${SYMBOLS[i]}</span>
+                  <span>${optText}</span>
+                  ${optTag}
+                </div>`;
+            }).join('')}
+          </div>
+
+          <div class="review-diff-bar">
+            <div>내 답: <b style="color:${isCorrect ? '#166534' : '#dc2626'};">${myChoiceText}</b></div>
+            <div>실제 정답: <b style="color:#166534;">${realAnswerText}</b></div>
+          </div>
+
+          <div class="explanation-box" style="margin-top:12px;">
+            <div class="ans-highlight">
+              <span>🎯 정답:</span>
+              <span>${realAnswerText}</span>
+            </div>
+            <div class="exp-content">${formatMarkdown(q.explanation)}</div>
+          </div>
+        </div>`;
+    });
+
+    reviewViewerBody.innerHTML = html;
+  }
+
+  function openReviewInNewWindow() {
+    if (!currentReviewRecord) return;
+    const targetExam = window.EXAM_DATA.find(e => e.code === currentReviewRecord.examCode) || window.EXAM_DATA[0];
+    const userAns = currentReviewRecord.answers || {};
+
+    const win = window.open('', '_blank');
+    if (!win) {
+      alert("브라우저 팝업이 차단되었습니다. 팝업 허용 후 다시 시도해주세요.");
+      return;
+    }
+
+    let cardsHtml = '';
+    (targetExam.questions || []).forEach(q => {
+      const chosen = userAns[q.num];
+      const isAnswered = chosen !== undefined;
+      const isCorrect = isAnswered && chosen === q.answerNum;
+      const badgeText = !isAnswered ? '⚪ 미응답' : (isCorrect ? '✔️ 정답 (+2점)' : '❌ 오답');
+      const badgeBg = !isAnswered ? '#f1f5f9' : (isCorrect ? '#dcfce7' : '#fee2e2');
+      const badgeColor = !isAnswered ? '#475569' : (isCorrect ? '#166534' : '#991b1b');
+      const myChoiceText = isAnswered ? `${SYMBOLS[chosen - 1]} ${q.options[chosen - 1] || ''}` : '미응답';
+
+      cardsHtml += `
+        <div style="background:#fff; border:1px solid #e2e8f0; border-left:5px solid ${isCorrect ? '#10b981' : (isAnswered ? '#ef4444' : '#94a3b8')}; border-radius:12px; padding:20px; margin-bottom:18px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+            <div style="display:flex; gap:8px; align-items:center;">
+              <span style="font-weight:900; background:#2563eb; color:#fff; padding:2px 8px; border-radius:4px; font-size:12px;">${pad2(q.num)}번</span>
+              <span style="background:#eff6ff; color:#1e40af; font-size:12px; font-weight:700; padding:2px 8px; border-radius:4px;">${q.subject}</span>
+              <span style="background:${badgeBg}; color:${badgeColor}; font-size:12px; font-weight:800; padding:2px 8px; border-radius:4px;">${badgeText}</span>
+            </div>
+            <span style="font-size:12px; color:#64748b; font-weight:600;">배점 2점</span>
+          </div>
+          <div style="font-size:16px; font-weight:700; color:#0f172a; line-height:1.6; margin-bottom:14px;">${q.question}</div>
+          ${q.image ? `<div style="text-align:center; margin-bottom:12px;"><img src="${q.image}" style="max-width:100%; border-radius:8px;"></div>` : ''}
+          <div style="margin-bottom:12px;">
+            ${q.options.map((opt, i) => {
+              const optNum = i + 1;
+              const isTarget = optNum === q.answerNum;
+              const isMy = isAnswered && optNum === chosen;
+              let bg = '#fafafa';
+              let border = '#f1f5f9';
+              let extra = '';
+              if (isTarget) {
+                bg = '#ecfdf5';
+                border = '#86efac';
+                extra = '<span style="margin-left:auto; font-size:11px; font-weight:800; color:#166534; background:#dcfce7; padding:2px 6px; border-radius:4px;">🎯 정답</span>';
+              }
+              if (isMy && !isCorrect) {
+                bg = '#fef2f2';
+                border = '#fca5a5';
+                extra = '<span style="margin-left:auto; font-size:11px; font-weight:800; color:#991b1b; background:#fee2e2; padding:2px 6px; border-radius:4px;">내 선택 ❌</span>';
+              }
+              return `<div style="display:flex; align-items:flex-start; gap:10px; padding:10px 14px; border-radius:8px; border:1px solid ${border}; background:${bg}; margin-bottom:6px; font-size:14px; line-height:1.4;"><span style="font-weight:800; color:#2563eb;">${SYMBOLS[i]}</span><span>${opt}</span>${extra}</div>`;
+            }).join('')}
+          </div>
+          <div style="background:#f8fafc; border:1px solid #e2e8f0; padding:10px 14px; border-radius:8px; display:flex; justify-content:space-between; font-size:13px; margin-bottom:12px;">
+            <div>내 답: <b style="color:${isCorrect ? '#166534' : '#dc2626'};">${myChoiceText}</b></div>
+            <div>실제 정답: <b style="color:#166534;">${q.answer} ${q.options[q.answerNum - 1] || ''}</b></div>
+          </div>
+          <div style="background:#eff6ff; border-left:4px solid #2563eb; padding:14px 16px; border-radius:8px;">
+            <div style="font-weight:800; color:#1e40af; margin-bottom:6px;">💡 정답 및 초심자 맞춤 해설</div>
+            <div style="font-size:13.5px; color:#334155; line-height:1.65; white-space:pre-wrap;">${formatMarkdown(q.explanation).replace(/<[^>]+>/g, '')}</div>
+          </div>
+        </div>`;
+    });
+
+    win.document.write(`
+      <!DOCTYPE html>
+      <html lang="ko">
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>${currentReviewRecord.examDate} 풀이 결과 (새 창)</title>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
+        <style>
+          body { font-family: Pretendard, -apple-system, sans-serif; background: #f8fafc; color: #0f172a; margin: 0; padding: 20px; }
+          .container { max-width: 860px; margin: 0 auto; }
+          .header { background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.04); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+          .score-pill { font-size: 26px; font-weight: 900; color: ${currentReviewRecord.passed ? '#10b981' : '#ef4444'}; }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <div>
+              <h2 style="margin:0; font-size:20px;">📅 ${currentReviewRecord.examDate} 필기 기출문제 풀이 결과</h2>
+              <div style="color:#64748b; font-size:13px; margin-top:4px;">정답 ${currentReviewRecord.correctCount} / 오답 ${currentReviewRecord.wrongCount} / 미응답 ${currentReviewRecord.unansweredCount}</div>
+            </div>
+            <div>
+              <div class="score-pill">${currentReviewRecord.score}점 (${currentReviewRecord.passed ? '합격' : '불합격'})</div>
+            </div>
+          </div>
+          ${cardsHtml}
+        </div>
+      </body>
+      </html>
+    `);
+    win.document.close();
   }
 
   // ---------- Quick Answers Modal ----------
