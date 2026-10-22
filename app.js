@@ -209,16 +209,7 @@
     examSelect.addEventListener('change', e => {
       currentExamIndex = parseInt(e.target.value, 10);
       currentPage = 1;
-      setSubjectFilter('all');
       renderApp();
-    });
-
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        setSubjectFilter(btn.getAttribute('data-subject'));
-        currentPage = 1;
-        renderQuestions();
-      });
     });
 
     prevPageBtn.addEventListener('click', () => goToPage(currentPage - 1));
@@ -389,19 +380,11 @@
   }
 
   function setSubjectFilter(subject) {
-    currentSubjectFilter = subject;
-    document.querySelectorAll('.tab-btn').forEach(b =>
-      b.classList.toggle('active', b.getAttribute('data-subject') === subject));
+    currentSubjectFilter = subject || 'all';
   }
 
   function getFilteredQuestions(ex) {
-    if (currentSubjectFilter === 'all') return ex.questions;
-    if (currentSubjectFilter === 'wrong') {
-      const ans = answersOf(ex.code);
-      return ex.questions.filter(q => ans[q.num] !== q.answerNum);
-    }
-    const key = currentSubjectFilter.split(':')[0];
-    return ex.questions.filter(q => q.subject.includes(key));
+    return ex.questions;
   }
 
   function goToPage(page) {
@@ -443,8 +426,10 @@
       if (toggleAllBtnTextShort) toggleAllBtnTextShort.textContent = '해설';
     }
 
-    wrongOnlyTab.style.display = revealed && computeResult(exam()).answeredCount > 0 ? '' : 'none';
-    if (wrongOnlyTab.style.display === 'none' && currentSubjectFilter === 'wrong') setSubjectFilter('all');
+    if (wrongOnlyTab) {
+      wrongOnlyTab.style.display = revealed && computeResult(exam()).answeredCount > 0 ? '' : 'none';
+      if (wrongOnlyTab.style.display === 'none' && currentSubjectFilter === 'wrong') setSubjectFilter('all');
+    }
 
     if (isExamMode && !done) {
       examModeHint.className = 'exam-mode-hint';

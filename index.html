@@ -38,6 +38,12 @@
       padding: 0;
     }
 
+    html, body {
+      width: 100%;
+      max-width: 100%;
+      overflow-x: hidden;
+    }
+
     body {
       font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       background-color: var(--bg-page);
@@ -216,58 +222,30 @@
       background-color: #dcfce7;
     }
 
-    /* Score & Subject Filter Bar */
+    /* Score Status Bar */
     .sub-bar {
       max-width: 1000px;
       margin: 14px auto 0;
       padding: 0 20px;
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 12px;
+      justify-content: center;
       width: 100%;
-    }
-
-    .subject-tabs {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      flex-wrap: wrap;
-    }
-
-    .tab-btn {
-      padding: 5px 12px;
-      font-size: 12px;
-      font-weight: 600;
-      background: #ffffff;
-      border: 1px solid var(--border-card);
-      border-radius: 9999px;
-      color: var(--text-sub);
-      cursor: pointer;
-      transition: var(--transition);
-    }
-
-    .tab-btn:hover {
-      background: #f1f5f9;
-      color: var(--text-main);
-    }
-
-    .tab-btn.active {
-      background: #1e3a8a;
-      color: #ffffff;
-      border-color: #1e3a8a;
+      box-sizing: border-box;
     }
 
     .score-card {
-      display: flex;
+      display: inline-flex;
       align-items: center;
-      gap: 12px;
+      justify-content: center;
+      gap: 14px;
       background: #ffffff;
       border: 1px solid var(--border-card);
-      padding: 5px 12px;
+      padding: 7px 20px;
       border-radius: 9999px;
-      font-size: 12px;
+      font-size: 13px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+      flex-wrap: wrap;
     }
 
     .score-pill {
@@ -1598,32 +1576,16 @@
         }
       }
       .sub-bar {
-        padding: 8px 12px;
-        flex-direction: column;
-        align-items: stretch;
-        gap: 8px;
-      }
-      .subject-tabs {
-        overflow-x: auto;
-        flex-wrap: nowrap;
-        padding-bottom: 4px;
-        -webkit-overflow-scrolling: touch;
-        scrollbar-width: none;
-      }
-      .subject-tabs::-webkit-scrollbar {
-        display: none;
-      }
-      .tab-btn {
-        white-space: nowrap;
-        padding: 6px 10px;
-        font-size: 12px;
-        flex-shrink: 0;
+        padding: 6px 12px;
+        margin: 10px auto 0;
+        justify-content: center;
       }
       .score-card {
-        justify-content: space-between;
+        justify-content: space-around;
         width: 100%;
-        font-size: 12px;
+        font-size: 11.5px;
         padding: 6px 10px;
+        gap: 6px;
       }
       .content-area {
         padding: 10px 10px 80px;
@@ -1825,17 +1787,8 @@
     </div>
   </header>
 
-  <!-- Sub Filter & Score Bar -->
+  <!-- Score Status Bar -->
   <div class="sub-bar">
-    <div class="subject-tabs">
-      <button class="tab-btn active" data-subject="all">전체 과목 (50)</button>
-      <button class="tab-btn" data-subject="1과목: TCP/IP">1과목 TCP/IP (1~17)</button>
-      <button class="tab-btn" data-subject="2과목: 네트워크 일반">2과목 네트워크 일반 (18~27)</button>
-      <button class="tab-btn" data-subject="3과목: NOS">3과목 NOS (28~45)</button>
-      <button class="tab-btn" data-subject="4과목: 네트워크 운용기기">4과목 운용기기 (46~50)</button>
-      <button class="tab-btn" data-subject="wrong" id="wrongOnlyTab" style="display:none; color:#b91c1c;">❌ 오답만</button>
-    </div>
-
     <div class="score-card">
       <span class="score-pill total">진행: <b id="progressCount">0/50</b></span>
       <span>|</span>
