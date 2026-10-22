@@ -70,21 +70,6 @@ window.FirebaseManager = {
     const uid = auth.currentUser.uid;
     const examCode = examData.code;
 
-    // 오답 리스트 추출
-    const wrongList = resultData.items
-      .filter(item => item.status === 'ng' || item.status === 'na')
-      .map(item => ({
-        num: item.q.num,
-        question: item.q.question,
-        options: item.q.options,
-        answer: item.q.answer,
-        answerNum: item.q.answerNum,
-        subject: item.q.subject,
-        explanation: item.q.explanation,
-        userChoice: item.choice !== undefined ? item.choice : null,
-        isUnanswered: item.status === 'na'
-      }));
-
     const record = {
       examCode,
       examDate: examData.date,
@@ -96,37 +81,13 @@ window.FirebaseManager = {
       wrongCount: resultData.wrong,
       unansweredCount: resultData.unanswered,
       totalQuestions: resultData.total,
-      answers: examData.code in (window.userAnswers || {}) ? window.userAnswers[examData.code] : {},
-      wrongQuestions: wrongList,
+      answers: (window.userAnswers && window.userAnswers[examCode]) ? window.userAnswers[examCode] : {},
       bySubject: resultData.bySubject,
       updatedAt: firebase.firestore.FieldValue.serverTimestamp()
     };
 
     try {
-      // 1. 사용자 시험 결과 저장
       await db.collection('users').doc(uid).collection('exam_results').doc(examCode).set(record, { merge: true });
-
-      // 2. 누적 오답 보관함 동기화 (개별 오답 문서로 저장)
-      const batch = db.batch();
-      wrongList.forEach(w => {
-        const docRef = db.collection('users').doc(uid).collection('wrong_notes').doc(`${examCode}_q${w.num}`);
-        batch.set(docRef, {
-          examCode,
-          examDate: examData.date,
-          qNum: w.num,
-          question: w.question,
-          options: w.options,
-          answer: w.answer,
-          answerNum: w.answerNum,
-          subject: w.subject,
-          explanation: w.explanation,
-          userChoice: w.userChoice,
-          resolved: false, // 복습 완료 여부
-          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-        }, { merge: true });
-      });
-      await batch.commit();
-
       console.log(`[Firebase] ${examCode} 시험 결과 클라우드 저장 완료`);
       return record;
     } catch (err) {

@@ -37,11 +37,7 @@
   window.userAnswers = userAnswers;
 
   // History modal state
-  let currentHistoryTab = 'exam'; // 'exam' or 'wrong'
   let cachedHistoryList = [];
-  let cachedWrongNotes = [];
-  let wrongSubjectFilter = 'all';
-  let showUnresolvedOnly = false;
 
   function loadState() {
     try {
@@ -100,6 +96,7 @@
   const resultRetryBtn = $('resultRetryBtn');
   const resultWrongOnlyBtn = $('resultWrongOnlyBtn');
   const resultReviewBtn = $('resultReviewBtn');
+  const resultGoHistoryBtn = $('resultGoHistoryBtn');
   const progressCountEl = $('progressCount');
   const correctCountEl = $('correctCount');
   const wrongCountEl = $('wrongCount');
@@ -114,9 +111,6 @@
   const logoutBtn = $('logoutBtn');
   const myHistoryModal = $('myHistoryModal');
   const historyCloseBtn = $('historyCloseBtn');
-  const historyTabExamBtn = $('historyTabExamBtn');
-  const historyTabWrongBtn = $('historyTabWrongBtn');
-  const wrongNotesCountBadge = $('wrongNotesCountBadge');
   const historyModalBody = $('historyModalBody');
 
   // ---------- Helpers ----------
@@ -270,6 +264,12 @@
       renderQuestions();
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
+    if (resultGoHistoryBtn) {
+      resultGoHistoryBtn.addEventListener('click', () => {
+        closeResultModal();
+        openMyHistoryModal();
+      });
+    }
 
     // Firebase Auth Events
     if (googleLoginBtn) {
@@ -293,22 +293,6 @@
     if (myHistoryModal) {
       myHistoryModal.addEventListener('click', e => {
         if (e.target === myHistoryModal) myHistoryModal.classList.remove('active');
-      });
-    }
-    if (historyTabExamBtn) {
-      historyTabExamBtn.addEventListener('click', () => {
-        currentHistoryTab = 'exam';
-        historyTabExamBtn.classList.add('active');
-        historyTabWrongBtn.classList.remove('active');
-        renderHistoryModalContent();
-      });
-    }
-    if (historyTabWrongBtn) {
-      historyTabWrongBtn.addEventListener('click', () => {
-        currentHistoryTab = 'wrong';
-        historyTabWrongBtn.classList.add('active');
-        historyTabExamBtn.classList.remove('active');
-        renderHistoryModalContent();
       });
     }
 
@@ -346,22 +330,10 @@
       } else {
         userAvatar.style.display = 'none';
       }
-      // Load wrong note count badge in background
-      refreshWrongNotesCount();
     } else {
       googleLoginBtn.style.display = 'inline-flex';
       userProfileBadge.style.display = 'none';
-      wrongNotesCountBadge.textContent = '0';
     }
-  }
-
-  async function refreshWrongNotesCount() {
-    if (!window.FirebaseManager || !window.FirebaseManager.currentUser) return;
-    try {
-      const notes = await window.FirebaseManager.fetchWrongNotes();
-      const unresolved = notes.filter(n => !n.resolved).length;
-      wrongNotesCountBadge.textContent = String(unresolved);
-    } catch (e) { /* ignore */ }
   }
 
   function setSubjectFilter(subject) {
@@ -422,18 +394,19 @@
 
     if (isExamMode && !done) {
       examModeHint.className = 'exam-mode-hint';
-      examModeHint.innerHTML = '📝 <span><b>시험 모드</b> · 보기를 골라도 정답이 바로 공개되지 않습니다. 50문항을 모두 푼 뒤 <b>결과 확인</b>을 누르세요.</span>';
-    } else if (isExamMode && done) {
+      examModeHint.innerHTML = '📝 <span><b>시험 모드</b> · 보기를 골라도 정답이 바로 공개되지 않습니다. 문제를 푼 뒤 <b>성적 확인 및 저장</b>을 누르세요.</span>';
+    } else if (done) {
       const r = computeResult(exam());
       examModeHint.className = 'exam-mode-hint done';
-      examModeHint.innerHTML = `✅ <span><b>채점 완료</b> · ${r.score}점 (정답 ${r.correct} / 오답 ${r.wrong} / 미응답 ${r.unanswered}) — 답안이 잠겼습니다. 다시 풀려면 <b>다시 풀기</b>를 누르세요.</span>`;
+      examModeHint.innerHTML = `✅ <span><b>채점 완료</b> · 총점 <b>${r.score}점</b> (${r.passed ? '🎉 합격선!' : '불합격'}, 정답 ${r.correct} / 오답 ${r.wrong} / 미응답 ${r.unanswered}) — 내 문제풀이에 보관되었습니다.</span>`;
     } else {
       examModeHint.className = 'exam-mode-hint';
-      examModeHint.innerHTML = '⚡ <span><b>즉시 채점 모드</b> · 보기를 고르면 바로 정답과 해설이 표시됩니다.</span>';
+      examModeHint.innerHTML = '⚡ <span><b>즉시 채점 모드</b> · 보기를 고르면 바로 정답과 해설이 표시됩니다. 풀이를 마치면 아래 <b>성적 확인 및 저장</b>을 눌러주세요.</span>';
     }
 
-    floatingSubmitBtn.classList.toggle('hidden', !isExamMode);
-    submitPanel.style.display = isExamMode ? 'flex' : 'none';
+    // Both modes have access to submit panel & floating submit button
+    submitPanel.style.display = 'flex';
+    floatingSubmitBtn.classList.toggle('hidden', computeResult(exam()).answeredCount === 0 && !done);
     updateSubmitUI();
   }
 
@@ -443,19 +416,20 @@
     const pct = Math.round((r.answeredCount / r.total) * 100);
     submitProgressFill.style.width = pct + '%';
     floatingSubmitCount.textContent = done ? `${r.score}점` : `${r.answeredCount}/${r.total}`;
-    floatingSubmitBtn.firstElementChild.textContent = done ? '📊 결과 다시 보기' : '✅ 결과 확인';
+    floatingSubmitBtn.firstElementChild.textContent = done ? '📊 채점 결과 확인' : (r.answeredCount === r.total ? '✅ 성적 확인 및 저장' : '✅ 성적 확인');
     floatingSubmitBtn.classList.toggle('ready', !done && r.answeredCount === r.total);
-    submitExamBtn.textContent = done ? '📊 결과 다시 보기' : '✅ 결과 확인';
+    floatingSubmitBtn.classList.toggle('hidden', r.answeredCount === 0 && !done);
+    submitExamBtn.textContent = done ? '📊 채점 결과 다시 보기' : (r.answeredCount === r.total ? '✅ 성적 확인 & 내 문제풀이에 저장' : '✅ 성적 확인 및 저장');
 
     if (done) {
-      submitPanelTitle.textContent = `채점 완료 · ${r.score}점 ${r.passed ? '(합격)' : '(불합격)'}`;
-      submitPanelDesc.textContent = `정답 ${r.correct}개 · 오답 ${r.wrong}개 · 미응답 ${r.unanswered}개`;
+      submitPanelTitle.textContent = `채점 완료 · ${r.score}점 ${r.passed ? '(합격 🎉)' : '(불합격 😢)'}`;
+      submitPanelDesc.textContent = `정답 ${r.correct}개 · 오답 ${r.wrong}개 · 미응답 ${r.unanswered}개 (내 문제풀이에 안전하게 보관됨)`;
     } else if (r.answeredCount === r.total) {
-      submitPanelTitle.textContent = '🎯 50문항 모두 입력 완료!';
-      submitPanelDesc.textContent = '결과 확인을 눌러 점수와 오답을 확인하세요.';
+      submitPanelTitle.textContent = '🎉 50문항 모두 풀이 완료!';
+      submitPanelDesc.textContent = '성적 확인 및 저장을 누르면 점수가 산출되고 내 문제풀이에 영구 보관됩니다.';
     } else {
-      submitPanelTitle.textContent = `답안 입력 중 · ${r.answeredCount} / ${r.total}`;
-      submitPanelDesc.textContent = `남은 문항 ${r.unanswered}개 · 모두 풀고 결과 확인을 누르면 점수와 오답을 알려드립니다.`;
+      submitPanelTitle.textContent = `답안 입력 중 · ${r.answeredCount} / ${r.total}문항 완료 (${pct}%)`;
+      submitPanelDesc.textContent = `남은 문항 ${r.unanswered}개 · 언제든 성적 확인을 눌러 채점하고 내 문제풀이에 저장할 수 있습니다.`;
     }
   }
 
@@ -793,40 +767,33 @@
     resultModal.classList.remove('active');
   }
 
-  // ---------- My History & Wrong Notes Modal ----------
+  // ---------- My History Modal ----------
   async function openMyHistoryModal() {
     if (!window.FirebaseManager || !window.FirebaseManager.currentUser) {
-      alert("구글 로그인 후 '내 문제풀이' 기능을 이용할 수 있습니다.");
+      const goLogin = confirm("구글 로그인 후 '내 문제풀이' 기능을 이용할 수 있습니다.\n지금 구글 계정으로 로그인하시겠습니까?");
+      if (goLogin && window.FirebaseManager) {
+        window.FirebaseManager.loginWithGoogle();
+      }
       return;
     }
     myHistoryModal.classList.add('active');
-    historyModalBody.innerHTML = '<div style="padding:40px; text-align:center; color:var(--text-muted);">클라우드에서 학습 기록을 불러오는 중...</div>';
+    historyModalBody.innerHTML = '<div style="padding:40px; text-align:center; color:var(--text-muted); font-size:14px;">☁️ 클라우드에서 학습 기록을 불러오는 중...</div>';
 
     try {
       cachedHistoryList = await window.FirebaseManager.fetchHistory();
-      cachedWrongNotes = await window.FirebaseManager.fetchWrongNotes();
-      wrongNotesCountBadge.textContent = String(cachedWrongNotes.filter(n => !n.resolved).length);
-      renderHistoryModalContent();
+      renderMyHistoryModal();
     } catch (err) {
-      historyModalBody.innerHTML = '<div style="padding:40px; text-align:center; color:#ef4444;">기록을 불러오지 못했습니다. 잠시 후 다시 시도해주세요.</div>';
+      historyModalBody.innerHTML = '<div style="padding:40px; text-align:center; color:#ef4444; font-size:14px;">기록을 불러오지 못했습니다. 잠시 후 다시 시도해주세요.</div>';
     }
   }
 
-  function renderHistoryModalContent() {
-    if (currentHistoryTab === 'exam') {
-      renderExamHistoryTab();
-    } else {
-      renderWrongNotesTab();
-    }
-  }
-
-  function renderExamHistoryTab() {
+  function renderMyHistoryModal() {
     if (!cachedHistoryList || cachedHistoryList.length === 0) {
       historyModalBody.innerHTML = `
-        <div style="padding:50px 20px; text-align:center; color:var(--text-muted);">
-          <div style="font-size:40px; margin-bottom:10px;">📝</div>
-          <p style="font-size:15px; font-weight:700; color:#1e293b;">아직 응시한 시험 기록이 없습니다.</p>
-          <p style="font-size:13px; margin-top:4px;">기출문제를 풀고 '결과 확인'을 누르면 이곳에 성적 히스토리가 자동으로 저장됩니다.</p>
+        <div style="padding:60px 20px; text-align:center; color:var(--text-muted);">
+          <div style="font-size:48px; margin-bottom:12px;">📝</div>
+          <p style="font-size:16px; font-weight:800; color:#1e293b;">아직 응시한 시험 기록이 없습니다.</p>
+          <p style="font-size:13.5px; margin-top:6px; color:#64748b;">시험을 풀고 '성적 확인 & 내 문제풀이에 저장'을 누르면 이곳에 성적과 답안이 자동으로 보관됩니다.</p>
         </div>`;
       return;
     }
@@ -853,12 +820,15 @@
           <div class="lbl">최고 점수</div>
         </div>
         <div class="history-stat-card">
-          <div class="val" style="color:${passRate >= 60 ? '#10b981' : '#ef4444'};">${passRate}%</div>
-          <div class="lbl">합격률 (${passedCount}/${totalExams})</div>
+          <div class="val" style="color:${passRate >= 60 ? '#10b981' : '#ef4444'};">${passedCount}회 (${passRate}%)</div>
+          <div class="lbl">합격 횟수 / 합격률</div>
         </div>
       </div>
 
-      <div class="result-section-title" style="margin-top:0;">📅 회차별 응시 이력 (${totalExams}건)</div>
+      <div class="result-section-title" style="margin-top:0; font-size:14px; font-weight:800; color:#1e293b; margin-bottom:12px;">
+        📅 내가 푼 회차별 시험 기록 (${totalExams}건)
+        <span style="font-size:12px; font-weight:500; color:var(--text-muted); margin-left:6px;">(회차 카드를 클릭하면 당시 풀었던 화면 그대로 복원됩니다)</span>
+      </div>
       <div class="history-list">`;
 
     cachedHistoryList.forEach(item => {
@@ -867,15 +837,29 @@
         : '최근';
 
       html += `
-        <div class="history-card">
-          <div>
-            <div class="history-card-title">${item.examDate} 기출문제 (${item.examCode})</div>
-            <div class="history-card-meta">응시 일시: ${dateStr} · 정답 ${item.correctCount} / 오답 ${item.wrongCount} / 미응답 ${item.unansweredCount}</div>
+        <div class="history-card" data-restore-exam="${item.examCode}" title="클릭하면 ${item.examDate} 풀이 화면으로 바로 이동합니다">
+          <div class="history-card-left">
+            <div class="history-card-title">
+              <span>📌</span>
+              <span>${item.examDate} 필기 기출문제 (${item.examCode})</span>
+            </div>
+            <div class="history-card-meta">
+              <span>🕒 ${dateStr}</span>
+              <span>·</span>
+              <span>정답 <b style="color:#16a34a;">${item.correctCount}</b></span>
+              <span>오답 <b style="color:#dc2626;">${item.wrongCount}</b></span>
+              <span>미응답 ${item.unansweredCount}</span>
+            </div>
           </div>
-          <div class="history-card-score">
-            <span class="score-badge-pill ${item.passed ? 'passed' : 'failed'}">${item.score}점</span>
-            <span class="pass-badge ${item.passed ? 'pass' : 'fail'}" style="margin:0;">${item.passed ? '합격' : '불합격'}</span>
-            <button class="btn btn-primary" data-load-exam="${item.examCode}" style="padding:6px 12px; font-size:12px;">이동하여 풀기</button>
+          <div class="history-card-right">
+            <div class="history-score-box">
+              <span class="history-score-num ${item.passed ? 'passed' : 'failed'}">${item.score}점</span>
+              <span class="history-status-pill ${item.passed ? 'pass' : 'fail'}">${item.passed ? '합격' : '불합격'}</span>
+            </div>
+            <div class="history-card-arrow">
+              <span>풀이 복원</span>
+              <span>➔</span>
+            </div>
           </div>
         </div>`;
     });
@@ -883,151 +867,31 @@
     html += `</div>`;
     historyModalBody.innerHTML = html;
 
-    historyModalBody.querySelectorAll('[data-load-exam]').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const code = btn.getAttribute('data-load-exam');
+    // Attach card click event to restore exam
+    historyModalBody.querySelectorAll('[data-restore-exam]').forEach(card => {
+      card.addEventListener('click', () => {
+        const code = card.getAttribute('data-restore-exam');
+        const targetRecord = cachedHistoryList.find(h => h.examCode === code);
         const idx = window.EXAM_DATA.findIndex(e => e.code === code);
         if (idx !== -1) {
           currentExamIndex = idx;
           examSelect.value = idx;
+          if (targetRecord && targetRecord.answers) {
+            userAnswers[code] = Object.assign({}, targetRecord.answers);
+          }
+          submitted[code] = true;
+          saveState();
+          refreshExamSelectLabel();
           currentPage = 1;
+          setSubjectFilter('all');
           myHistoryModal.classList.remove('active');
           renderApp();
-          window.scrollTo({ top: 0, behavior: 'smooth' });
+
+          examModeHint.className = 'exam-mode-hint done';
+          examModeHint.innerHTML = `📂 <span><b>[${targetRecord ? targetRecord.examDate : ''} 풀이 복원]</b> 총점 <b>${targetRecord ? targetRecord.score : ''}점</b> (${targetRecord && targetRecord.passed ? '합격 🎉' : '불합격 😢'}, 정답 ${targetRecord ? targetRecord.correctCount : 0}개 / 오답 ${targetRecord ? targetRecord.wrongCount : 0}개) — 이전에 풀었던 답안과 채점 결과가 그대로 복원되었습니다.</span>`;
+
+          window.scrollTo({ top: 120, behavior: 'smooth' });
         }
-      });
-    });
-  }
-
-  function renderWrongNotesTab() {
-    let filteredNotes = cachedWrongNotes;
-    if (wrongSubjectFilter !== 'all') {
-      filteredNotes = filteredNotes.filter(n => (n.subject || '').includes(wrongSubjectFilter));
-    }
-    if (showUnresolvedOnly) {
-      filteredNotes = filteredNotes.filter(n => !n.resolved);
-    }
-
-    const unresolvedCount = cachedWrongNotes.filter(n => !n.resolved).length;
-    wrongNotesCountBadge.textContent = String(unresolvedCount);
-
-    let html = `
-      <div class="wrong-filter-bar">
-        <div style="display:flex; align-items:center; gap:8px;">
-          <label style="font-weight:700; font-size:13px; color:var(--text-sub);">과목 필터:</label>
-          <select class="wrong-subject-select" id="wrongFilterSubject">
-            <option value="all" ${wrongSubjectFilter === 'all' ? 'selected' : ''}>전체 과목 (${cachedWrongNotes.length})</option>
-            <option value="1과목" ${wrongSubjectFilter === '1과목' ? 'selected' : ''}>1과목 TCP/IP</option>
-            <option value="2과목" ${wrongSubjectFilter === '2과목' ? 'selected' : ''}>2과목 네트워크 일반</option>
-            <option value="3과목" ${wrongSubjectFilter === '3과목' ? 'selected' : ''}>3과목 NOS</option>
-            <option value="4과목" ${wrongSubjectFilter === '4과목' ? 'selected' : ''}>4과목 네트워크 운용기기</option>
-          </select>
-        </div>
-        <div>
-          <label class="wrong-resolve-checkbox">
-            <input type="checkbox" id="unresolvedOnlyCheckbox" ${showUnresolvedOnly ? 'checked' : ''} />
-            <span>미해결 오답만 보기</span>
-          </label>
-        </div>
-      </div>`;
-
-    if (filteredNotes.length === 0) {
-      html += `
-        <div style="padding:60px 20px; text-align:center; color:var(--text-muted);">
-          <div style="font-size:40px; margin-bottom:10px;">🎉</div>
-          <p style="font-size:15px; font-weight:700; color:#10b981;">해당 조건의 오답이 없습니다!</p>
-          <p style="font-size:13px; margin-top:4px;">틀린 문제들을 완벽히 정복하셨습니다.</p>
-        </div>`;
-      historyModalBody.innerHTML = html;
-      bindWrongFilterEvents();
-      return;
-    }
-
-    html += `<div class="history-list">`;
-    filteredNotes.forEach(note => {
-      const mySymbol = note.userChoice ? SYMBOLS[note.userChoice - 1] : '미응답';
-      html += `
-        <div class="wrong-note-card ${note.resolved ? 'resolved' : ''}" id="wrongCard_${note.id}">
-          <div class="wrong-note-header">
-            <div style="display:flex; align-items:center; gap:8px;">
-              <span class="wrong-note-badge">${note.examDate} · ${pad2(note.qNum)}번</span>
-              <span class="q-subject-badge">${note.subject}</span>
-            </div>
-            <label class="wrong-resolve-checkbox">
-              <input type="checkbox" data-note-id="${note.id}" ${note.resolved ? 'checked' : ''} class="resolve-toggle-btn" />
-              <span>${note.resolved ? '✔️ 복습 완료' : '복습 완료 표시'}</span>
-            </label>
-          </div>
-
-          <div class="wrong-note-stem">${note.question}</div>
-
-          <div class="wrong-note-diff">
-            <div>내 답: <span class="my">${mySymbol}</span></div>
-            <div>실제 정답: <span class="real">${note.answer} ${note.options ? note.options[note.answerNum - 1] : ''}</span></div>
-          </div>
-
-          <button class="accordion-toggle-btn" data-toggle-exp="noteExp_${note.id}">
-            <span>💡 정답 및 맞춤 해설 열람</span>
-            <span class="arrow-icon">▼</span>
-          </button>
-
-          <div class="explanation-wrapper" id="noteExp_${note.id}">
-            <div class="explanation-box" style="margin-top:10px;">
-              <div class="exp-content">${formatMarkdown(note.explanation)}</div>
-            </div>
-          </div>
-        </div>`;
-    });
-    html += `</div>`;
-
-    historyModalBody.innerHTML = html;
-    bindWrongFilterEvents();
-  }
-
-  function bindWrongFilterEvents() {
-    const subjectSelect = $('wrongFilterSubject');
-    const unresolvedCheck = $('unresolvedOnlyCheckbox');
-
-    if (subjectSelect) {
-      subjectSelect.addEventListener('change', e => {
-        wrongSubjectFilter = e.target.value;
-        renderWrongNotesTab();
-      });
-    }
-    if (unresolvedCheck) {
-      unresolvedCheck.addEventListener('change', e => {
-        showUnresolvedOnly = e.target.checked;
-        renderWrongNotesTab();
-      });
-    }
-
-    historyModalBody.querySelectorAll('.resolve-toggle-btn').forEach(chk => {
-      chk.addEventListener('change', async e => {
-        const id = chk.getAttribute('data-note-id');
-        const resolved = chk.checked;
-        const targetNote = cachedWrongNotes.find(n => n.id === id);
-        if (targetNote) targetNote.resolved = resolved;
-
-        const card = $(`wrongCard_${id}`);
-        if (card) card.classList.toggle('resolved', resolved);
-        chk.nextElementSibling.textContent = resolved ? '✔️ 복습 완료' : '복습 완료 표시';
-
-        if (window.FirebaseManager) {
-          await window.FirebaseManager.toggleWrongNoteResolved(id, resolved);
-          const unresolved = cachedWrongNotes.filter(n => !n.resolved).length;
-          wrongNotesCountBadge.textContent = String(unresolved);
-        }
-      });
-    });
-
-    historyModalBody.querySelectorAll('[data-toggle-exp]').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const targetId = btn.getAttribute('data-toggle-exp');
-        const wrapper = $(targetId);
-        if (!wrapper) return;
-        const open = !wrapper.classList.contains('open');
-        wrapper.classList.toggle('open', open);
-        btn.classList.toggle('open', open);
       });
     });
   }
