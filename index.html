@@ -733,6 +733,270 @@
       color: #1e3a8a;
     }
 
+    /* ===== Google Auth & User Header ===== */
+    .header-actions-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn-google {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #ffffff;
+      color: #374151;
+      border: 1.5px solid #d1d5db;
+      padding: 7px 14px;
+      border-radius: 9999px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: var(--transition);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    }
+    .btn-google:hover {
+      background: #f9fafb;
+      border-color: #9ca3af;
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-sm);
+    }
+    .btn-google svg { width: 16px; height: 16px; }
+
+    .user-profile-badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #f1f5f9;
+      padding: 4px 6px 4px 10px;
+      border-radius: 9999px;
+      border: 1px solid #e2e8f0;
+    }
+    .user-avatar {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 1px solid #cbd5e1;
+    }
+    .user-name {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: #1e293b;
+      max-width: 90px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .btn-history {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: linear-gradient(135deg, #2563eb, #1d4ed8);
+      color: #ffffff;
+      border: none;
+      padding: 5px 11px;
+      border-radius: 9999px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .btn-history:hover {
+      box-shadow: 0 2px 6px rgba(37,99,235,0.4);
+      transform: translateY(-1px);
+    }
+    .btn-logout {
+      background: none;
+      border: none;
+      color: #64748b;
+      font-size: 11.5px;
+      padding: 4px 8px;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: var(--transition);
+    }
+    .btn-logout:hover { color: #ef4444; background: #fee2e2; }
+
+    /* ===== My History Modal ===== */
+    .history-panel {
+      max-width: 860px;
+      width: 95%;
+      height: 90vh;
+    }
+    .history-tabs {
+      display: flex;
+      gap: 8px;
+      border-bottom: 1px solid var(--border-card);
+      padding: 0 20px;
+      background: #f8fafc;
+    }
+    .history-tab-btn {
+      padding: 12px 16px;
+      border: none;
+      background: none;
+      font-family: inherit;
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--text-muted);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: var(--transition);
+    }
+    .history-tab-btn.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+    }
+    .history-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+    .history-stat-card {
+      background: #f8fafc;
+      border: 1px solid var(--border-card);
+      border-radius: var(--radius-md);
+      padding: 14px 12px;
+      text-align: center;
+    }
+    .history-stat-card .val {
+      font-size: 24px;
+      font-weight: 900;
+      color: #1e3a8a;
+      line-height: 1.1;
+    }
+    .history-stat-card .lbl {
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .history-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .history-card {
+      background: #ffffff;
+      border: 1px solid var(--border-card);
+      border-radius: var(--radius-md);
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      flex-wrap: wrap;
+      transition: var(--transition);
+    }
+    .history-card:hover {
+      border-color: #93c5fd;
+      box-shadow: var(--shadow-sm);
+    }
+    .history-card-title {
+      font-size: 14.5px;
+      font-weight: 800;
+      color: #0f172a;
+    }
+    .history-card-meta {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+    .history-card-score {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .score-badge-pill {
+      font-size: 18px;
+      font-weight: 900;
+      color: #2563eb;
+    }
+    .score-badge-pill.passed { color: #10b981; }
+    .score-badge-pill.failed { color: #ef4444; }
+
+    /* Wrong Notes List in History */
+    .wrong-filter-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+    .wrong-subject-select {
+      padding: 6px 12px;
+      border-radius: var(--radius-sm);
+      border: 1px solid #cbd5e1;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .wrong-note-card {
+      background: #ffffff;
+      border: 1px solid #fed7aa;
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      margin-bottom: 10px;
+      transition: var(--transition);
+    }
+    .wrong-note-card.resolved {
+      border-color: #e2e8f0;
+      background: #f8fafc;
+      opacity: 0.65;
+    }
+    .wrong-note-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 8px;
+      flex-wrap: wrap;
+    }
+    .wrong-note-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11.5px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 4px;
+      background: #ffedd5;
+      color: #c2410c;
+    }
+    .wrong-resolve-checkbox {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      user-select: none;
+      color: var(--text-sub);
+    }
+    .wrong-note-stem {
+      font-size: 14px;
+      font-weight: 700;
+      color: #0f172a;
+      line-height: 1.5;
+      margin-bottom: 10px;
+    }
+    .wrong-note-diff {
+      display: flex;
+      gap: 14px;
+      font-size: 12.5px;
+      background: #fff7ed;
+      padding: 8px 12px;
+      border-radius: var(--radius-sm);
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+    .wrong-note-diff .my { color: #dc2626; font-weight: 700; }
+    .wrong-note-diff .real { color: #16a34a; font-weight: 700; }
+
     /* ===== Exam Mode / Submit / Result ===== */
     .btn.mode-exam {
       background: linear-gradient(135deg, #7c3aed, #6366f1);
@@ -1053,10 +1317,26 @@
           </div>
         </div>
         
-        <!-- Header Exam Date Badge -->
-        <div class="exam-date-badge" id="examDateBadge">
-          <span class="icon">📅</span>
-          <span id="currentDateText">2026년 08월 02일 필기 기출문제</span>
+        <!-- Header Right: Exam Date & Auth -->
+        <div class="header-actions-right">
+          <div class="exam-date-badge" id="examDateBadge">
+            <span class="icon">📅</span>
+            <span id="currentDateText">2026년 08월 02일 필기 기출문제</span>
+          </div>
+
+          <!-- Google Auth Container -->
+          <div id="authContainer">
+            <button class="btn-google" id="googleLoginBtn" type="button">
+              <svg viewBox="0 0 24 24"><path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.8-2.4 3.65v3h3.88c2.27-2.09 3.66-5.17 3.66-9.09z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.27v3.09C3.3 21.45 7.37 24 12 24z"/><path fill="#FBBC05" d="M5.28 14.32c-.25-.72-.38-1.49-.38-2.32s.13-1.6.38-2.32V6.59H1.27C.46 8.21 0 10.05 0 12s.46 3.79 1.27 5.41l4.01-3.09z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.37 0 3.3 2.55 1.27 6.59l4.01 3.09c.95-2.83 3.6-4.93 6.72-4.93z"/></svg>
+              <span>Google 로그인</span>
+            </button>
+            <div class="user-profile-badge" id="userProfileBadge" style="display:none;">
+              <img src="" class="user-avatar" id="userAvatar" alt="프로필" />
+              <span class="user-name" id="userName">사용자</span>
+              <button class="btn-history" id="myHistoryBtn" type="button"><span>📋</span> 내 문제풀이</button>
+              <button class="btn-logout" id="logoutBtn" type="button" title="로그아웃">로그아웃</button>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -1199,10 +1479,33 @@
     </div>
   </div>
 
+  <!-- My History Modal (내 문제풀이 대시보드) -->
+  <div class="modal-backdrop" id="myHistoryModal">
+    <div class="modal-panel history-panel" role="dialog" aria-labelledby="historyModalTitle">
+      <div class="modal-header">
+        <h3 id="historyModalTitle">📋 내 문제풀이 & 오답 보관함</h3>
+        <button class="modal-close-btn" id="historyCloseBtn">&times;</button>
+      </div>
+      <div class="history-tabs">
+        <button class="history-tab-btn active" id="historyTabExamBtn" type="button">📊 회차별 응시 기록</button>
+        <button class="history-tab-btn" id="historyTabWrongBtn" type="button">❌ 누적 오답 보관함 (<span id="wrongNotesCountBadge">0</span>)</button>
+      </div>
+      <div class="modal-body" id="historyModalBody">
+        <!-- Dynamic content injected via app.js -->
+      </div>
+    </div>
+  </div>
+
   <!-- Footer -->
   <footer class="app-footer">
     <p>네트워크관리사 2급 필기 기출문제 완전 정복 시스템 | 수험생 눈높이 맞춤 초심자 해설 및 10초 컷 도출 로직 수록</p>
   </footer>
+
+  <!-- Firebase Compat SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="firebase-config.js"></script>
 
   <!-- Load Exam Database -->
   <script src="data/exam_data.js"></script>
