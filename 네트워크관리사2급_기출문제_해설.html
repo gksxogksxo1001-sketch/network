@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>네트워크관리사 2급 필기 기출문제 해설서</title>
+<style>
+  @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+  @page {
+    size: A4;
+    margin: 15mm 12mm 15mm 12mm;
+  }
+  body {
+    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    line-height: 1.6;
+    color: #1e293b;
+    font-size: 13px;
+    background: #ffffff;
+    margin: 0;
+    padding: 0;
+  }
+  h1.title {
+    font-size: 22px;
+    font-weight: 800;
+    color: #1e3a8a;
+    border-bottom: 2.5px solid #2563eb;
+    padding-bottom: 8px;
+    margin-top: 5px;
+    margin-bottom: 14px;
+    text-align: center;
+  }
+  h2.section-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #1e3a8a;
+    background: #eff6ff;
+    padding: 7px 12px;
+    border-left: 4px solid #2563eb;
+    border-radius: 4px;
+    margin-top: 18px;
+    margin-bottom: 12px;
+    page-break-after: avoid;
+  }
+  .callout {
+    background: #f8fafc;
+    border-left: 3.5px solid #0284c7;
+    padding: 8px 12px;
+    border-radius: 4px;
+    margin-bottom: 12px;
+    color: #334155;
+    font-size: 12px;
+  }
+  .question-box {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 10px 14px;
+    margin-bottom: 10px;
+    page-break-inside: avoid;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+  }
+  .q-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0 0 6px 0;
+  }
+  p {
+    margin: 4px 0;
+  }
+  strong {
+    color: #1d4ed8;
+    font-weight: 700;
+  }
+  code {
+    background: #f1f5f9;
+    padding: 1px 5px;
+    border-radius: 3px;
+    color: #ea580c;
+    font-size: 12px;
+    font-family: Consolas, monospace;
+  }
+  ul, li {
+    margin: 3px 0;
+  }
+  li {
+    margin-left: 12px;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 10px 0 16px 0;
+    font-size: 11.5px;
+  }
+  th, td {
+    border: 1px solid #cbd5e1;
+    padding: 5px 6px;
+    text-align: center;
+  }
+  th {
+    background: #2563eb;
+    color: #ffffff;
+    font-weight: 600;
+  }
+  tr:nth-child(even) {
+    background: #f8fafc;
+  }
+</style>
+</head>
+<body>
+<h1 class='title'>네트워크관리사 2급 필기 기출문제 완전 정복 해설서 (초심자용)</h1>
+<div class='callout'><strong>시험 개요 및 안내</strong></div>
+<div class='callout'>- <strong>종목</strong>: 네트워크관리사 2급 필기</div>
+<div class='callout'>- <strong>문항 수</strong>: 총 50문항 (1과목 TCP/IP, 2과목 네트워크 일반, 3과목 NOS, 4과목 네트워크 운용기기)</div>
+<div class='callout'>- <strong>특징</strong>: 비전공자 및 초심자의 눈높이에 맞춘 비유 중심의 쉽고 명확한 정답 풀이 및 핵심 암기 팁 수록</div>
+<h2 class='section-title'>📌 빠른 정답표 (1번 ~ 50번)</h2>
+<table><tbody>
+<tr><th>번호</th><th>정답</th><th>번호</th><th>정답</th><th>번호</th><th>정답</th><th>번호</th><th>정답</th><th>번호</th><th>정답</th></tr>
+<tr><td><strong>1</strong></td><td>③</td><td><strong>11</strong></td><td>④</td><td><strong>21</strong></td><td>④</td><td><strong>31</strong></td><td>④</td><td><strong>41</strong></td><td>②</td></tr>
+<tr><td><strong>2</strong></td><td>①</td><td><strong>12</strong></td><td>④</td><td><strong>22</strong></td><td>②</td><td><strong>32</strong></td><td>④</td><td><strong>42</strong></td><td>④</td></tr>
+<tr><td><strong>3</strong></td><td>①</td><td><strong>13</strong></td><td>①</td><td><strong>23</strong></td><td>①</td><td><strong>33</strong></td><td>②</td><td><strong>43</strong></td><td>④</td></tr>
+<tr><td><strong>4</strong></td><td>②</td><td><strong>14</strong></td><td>④</td><td><strong>24</strong></td><td>③</td><td><strong>34</strong></td><td>②</td><td><strong>44</strong></td><td>③</td></tr>
+<tr><td><strong>5</strong></td><td>②</td><td><strong>15</strong></td><td>④</td><td><strong>25</strong></td><td>③</td><td><strong>35</strong></td><td>②</td><td><strong>45</strong></td><td>④</td></tr>
+<tr><td><strong>6</strong></td><td>①</td><td><strong>16</strong></td><td>①</td><td><strong>26</strong></td><td>①</td><td><strong>36</strong></td><td>②</td><td><strong>46</strong></td><td>②</td></tr>
+<tr><td><strong>7</strong></td><td>①</td><td><strong>17</strong></td><td>④</td><td><strong>27</strong></td><td>②</td><td><strong>37</strong></td><td>②</td><td><strong>47</strong></td><td>②</td></tr>
+<tr><td><strong>8</strong></td><td>②</td><td><strong>18</strong></td><td>③</td><td><strong>28</strong></td><td>③</td><td><strong>38</strong></td><td>③</td><td><strong>48</strong></td><td>④</td></tr>
+<tr><td><strong>9</strong></td><td>①</td><td><strong>19</strong></td><td>①</td><td><strong>29</strong></td><td>①</td><td><strong>39</strong></td><td>④</td><td><strong>49</strong></td><td>②</td></tr>
+<tr><td><strong>10</strong></td><td>①</td><td><strong>20</strong></td><td>②</td><td><strong>30</strong></td><td>①</td><td><strong>40</strong></td><td>②</td><td><strong>50</strong></td><td>②</td></tr>
+</tbody></table>
+<h1 class='title'>1과목: TCP/IP (1번 ~ 17번)</h1>
+<div class='question-box'><h3 class='q-title'>01. C Class에서 유효한 IP Address는?</h3>
+<li><strong>정답</strong>: <strong>③ 202.67.13.87</strong></li>
+<li><strong>초심자 해설</strong>:</li>
+<li>IP 주소는 맨 앞자리 숫자를 보고 체급(클래스)을 구분합니다.</li>
+<li><strong>A Class</strong>: <code>0 ~ 127</code></li>
+<li><strong>B Class</strong>: <code>128 ~ 191</code></li>
+<li><strong>C Class</strong>: <code>192 ~ 223</code></li>
+<li>보기 분석:</li>
+<li>① <code>33...</code> ➔ A Class</li>
+<li>② <code>128...</code> ➔ B Class</li>
+<li>③ <code>202...</code> ➔ 192~223 사이이므로 <strong>C Class 정답!</strong></li>
+<li>④ <code>222.248.256.34</code> ➔ IP 주소는 각 자리가 <code>0~255</code>까지만 가능합니다. 256은 존재할 수 없는 잘못된 주소입니다.</li>
+</div>
+<div class='question-box'><h3 class='q-title'>02. TCP/IP 프로토콜 계층 중 응용 계층에서 동작하지 않는 것은?</h3>
+<li><strong>정답</strong>: <strong>① ICMP</strong></li>
+<li><strong>초심자 해설</strong>:</li>
+<li><strong>응용(Application) 계층</strong>은 사용자가 다루는 프로그램과 직접 맞닿아 있는 서비스입니다.</li>
+<li><code>SMTP</code> (이메일 전송), <code>SNMP</code> (장비 상태 점검), <code>TFTP</code> (간단한 파일 전송)는 모두 응용 계층입니다.</li>
+<li><strong>ICMP</strong>는 인터넷(네트워크) 계층에서 통신 상태를 점검(<code>ping</code>)하거나 오류를 보고하는 <strong>"도로 점검반"</strong> 프로토콜입니다.</li>
+</div>
+<div class='question-box'><h3 class='q-title'>03. 서브넷 마스크(Subnet Mask)에 대한 설명으로 옳지 않은 것은?</h3>
+<li><strong>정답</strong>: <strong>① A, B, C Class 대역의 IP Address는 모두 같은 서브넷 마스크를 사용한다.</strong></li>
+<li><strong>초심자 해설</strong>:</li>
+<li>서브넷 마스크는 어디까지가 동네 이름(네트워크)이고 어디부터가 집 번호(호스트)인지를 가려주는 기준선입니다.</li>
+<li>클래스마다 기본 서브넷 마스크가 다릅니다:</li>
+<li>A Class: <code>255.0.0.0</code></li>
+<li>B Class: <code>255.255.0.0</code></li>
+<li>C Class: <code>255.255.255.0</code></li>
+<li>따라서 모두 같다는 ①번은 틀린 설명입니다.</li>
+</div>
+<div class='question-box'><h3 class='q-title'>04. IP 패킷 분할(단편화) 시 기준이 되는 크기는?</h3>
+<li><strong>정답</strong>: <strong>② MTU(Maximum Transmission Unit)</strong></li>
+<li><strong>초심자 해설</strong>:</li>
+<li><strong>MTU</strong>는 도로 터널의 <strong>"최대 통과 높이 제한"</strong>과 같습니다. 한 번에 보낼 수 있는 데이터 덩어리의 최대 크기(일반 이더넷은 1500바이트)입니다.</li>
+<li>참고: <code>TTL</code>은 패킷이 인터넷을 영원히 떠돌지 않게 소멸시키는 수명(생존 시간)입니다.</li>
+</div>
+<div class='question-box'><h3 class='q-title'>05. TCP가 제공하는 기능으로 옳지 않은 것은?</h3>
+<li><strong>정답</strong>: <strong>② 한 번에 많은 데이터의 전송에 유리하기 때문에 화상 통신과 같은 실시간 통신에 사용된다.</strong></li>
+<li><strong>초심자 해설</strong>:</li>
+<li><strong>TCP</strong>는 택배 기사님이 직접 방문해 서명받는 <strong>"등기 우편"</strong>입니다. 신뢰성이 높지만 과정(3-Way Handshaking, 에러 재전송)이 있어 상대적으로 느립니다.</li>
+<li>화상 회의나 실시간 게임처럼 조금 끊겨도 지연 없이 빨리 보내야 하는 서비스에는 TCP가 아니라 <strong>UDP</strong>를 사용합니다.</li>
+</div>
+<div class='question-box'><h3 class='q-title'>06. UDP 헤더에 포함되지 않는 항목은?</h3>
+<li><strong>정답</strong>: <strong>① 확인 응답 번호(Acknowledgment Number)</strong></li>
+<li><strong>초심자 해설</strong>:</li>
+<li>UDP는 "보낼 테니 알아서 받아라" 하고 던지는 비연결형 방식입니다.</li>
+<li>따라서 잘 받았는지 확인하는 <strong>확인 응답(ACK)</strong> 기능이 없으며, 헤더에도 해당 필드가 아예 없습니다. (ACK는 TCP에만 존재)</li>
+</div>
+<div class='question-box'><h3 class='q-title'>07. ICMP Message Type 설명으로 옳지 않은 것은?</h3>
+<li><strong>정답</strong>: <strong>① 3 - Echo Request 질의 메시지에 응답하는데 사용된다.</strong></li>
+<li><strong>초심자 해설</strong>:</li>
+<li><strong>Type 3</strong>은 "도착지에 갈 수 없다"는 배송 불가 통보인 <strong>Destination Unreachable (도달 불가)</strong>입니다.</li>
+<li>Echo Request에 응답하는 메시지는 <strong>Type 0 (Echo Reply)</strong>입니다.</li>
+</div>
+<div class='question-box'><h3 class='q-title'>08. 같은 네트워크의 모든 호스트에게 데이터를 일괄 전송하는 방식은?</h3>
+<li><strong>정답</strong>: <strong>② Broadcast (브로드캐스트)</strong></li>
+<li><strong>초심자 해설</strong>:</li>
+<li><strong>Unicast</strong>: 1대 1 귓속말</li>
+<li><strong>Broadcast</strong>: 아파트 단지 전체 방송 (모두에게 전송)</li>
+<li><strong>Multicast</strong>: 특정 동호회 그룹에만 전송</li>
+</div>
+<div class='question-box'><h3 class='q-title'>09. TCP/IP 4계층을 하위 계층부터 상위 계층 순으로 올바르게 나열한 것은?</h3>
+<li><strong>정답</strong>: <strong>① Network Interface - Internet - Transport - Application</strong></li>
+<li><strong>초심자 해설</strong>:</li>
+<li>1계층(바닥): <strong>Network Interface</strong> (랜선, 물리적 연결)</li>
+<li>2계층: <strong>Internet</strong> (IP 주소로 길 찾기)</li>
+<li>3계층: <strong>Transport</strong> (TCP/UDP 데이터 전송 관리)</li>
+<li>4계층(꼭대기): <strong>Application</strong> (웹 브라우저, 메일 등 소프트웨어)</li>
+</div>
+<div class='question-box'><h3 class='q-title'>10. B Class를 6개의 네트워크로 분할(서브네팅)할 때 가장 적절한 서브넷 마스크는?</h3>
+<li><strong>정답</strong>: <strong>① 255.255.224.0</strong></li>
+<li><strong>초심자 해설</strong>:</li>
+<li>B Class 기본 마스크: <code>255.255.0.0</code></li>
+<li>세 번째 자리에서 비트를 빌려 6개 방을 만들어야 합니다:</li>
+<li>1비트 빌리면: <em>2^1 = 2</em>개</li>
+<li>2비트 빌리면: <em>2^2 = 4</em>개 (부족)</li>
+<li>3비트 빌리면: <em>2^3 = 8</em>개 (6개 충족!)</li>
+<li>3비트를 1로 채우면 이진수 <code>1110 0000</code> ➔ 십진수 <em>128 + 64 + 32 = 224</em></li>
+<li>따라서 완성된 마스크는 <code>255.255.224.0</code>입니다.</li>
+</div>
+<div class='question-box'><h3 class='q-title'>11. TCP 3-Way Handshaking 3단계에서 사용되는 제어 Flag는?</h3>
+<li><strong>정답</strong>: <strong>④ ACK</strong></li>
+<li><strong>초심자 해설</strong>:</li>
+<li>연결 수립 3단계 악수 과정:</li>
+<p>1. 1단계: 접속 요청 ➔ <strong>SYN</strong></p>
+<p>2. 2단계: 수락 및 응답 ➔ <strong>SYN, ACK</strong></p>
+<p>3. 3단계: 확인 완료 ➔ <strong>ACK</strong></p>
+</div>
+<div class='question-box'><h3 class='q-title'>12. OSI 7계층별 PDU(데이터 전송 단위) 명칭으로 올바른 것은?</h3>
+<li><strong>정답</strong>: <strong>④ 2계층 : 프레임</strong></li>
+<li><strong>초심자 해설 (필수 암기)</strong>:</li>
+<li>1계층(물리): <strong>비트 (Bit)</strong></li>
+<li>2계층(데이터링크): <strong>프레임 (Frame)</strong></li>
+<li>3계층(네트워크): <strong>패킷 (Packet)</strong></li>
+<li>4계층(전송): <strong>세그먼트 (Segment)</strong></li>
+</div>
+<div class='question-box'><h3 class='q-title'>13. 데이터 앞뒤에 헤더와 트레일러를 붙이는 포장 과정은?</h3>
+<li><strong>정답</strong>: <strong>① 캡슐화 (Encapsulation)</strong></li>
+<li><strong>초심자 해설</strong>:</li>
+<li>알약을 캡슐로 감싸듯, 원본 데이터 앞(헤더)과 뒤(트레일러)에 주소 및 제어 정보를 덧붙여 전송 가능한 규격으로 포장하는 작업을 <strong>캡슐화</strong>라고 부릅니다.</li>
+</div>
+<div class='question-box'><h3 class='q-title'>14. IPv4와 IPv6 간 전환 기술에 해당하지 않는 것은?</h3>
+<li><strong>정답</strong>: <strong>④ 네트워크 주소 변환(NAT44)</strong></li>
+<li><strong>초심자 해설</strong>:</li>
+<li>IPv4 ➔ IPv6 전환 3대 기술: <strong>듀얼 스택</strong>, <strong>터널링</strong>, <strong>주소 변환(NAT64/NAT-PT)</strong></li>
+<li><code>NAT44</code>는 사설 IPv4를 공인 IPv4로 바꾸는 기술로, IPv6 전환과는 무관합니다.</li>
+</div>
+<div class='question-box'><h3 class='q-title'>15. RFC 5952에서 권고하는 IPv6 주소 표준 표기법으로 옳은 것은?</h3>
+<li><strong>정답</strong>: <strong>④ 연속된 0 값의 16비트 필드가 하나뿐인 경우에는 '::'으로 줄이지 않고 0으로 표기한다.</strong></li>
+<li><strong>초심자 해설</strong>:</li>
+<li>IPv6는 0이 연속될 때 <code>::</code>으로 생략 가능합니다.</li>
+<li>하지만 단 1개 필드만 0인 경우(예: <code>:0:</code>)는 굳이 <code>::</code>을 쓰지 않고 그냥 <code>0</code>으로 쓰며, 2개 이상 연속될 때만 <code>::</code>을 적용하도록 권고합니다. (<code>::</code>은 한 주소 내에서 딱 1번만 사용 가능)</li>
+</div>
+<div class='question-box'><h3 class='q-title'>16. 네트워크 관리 프로토콜 SNMP에 대한 설명으로 옳은 것은?</h3>
+<li><strong>정답</strong>: <strong>① 관리 시스템의 SNMP Manager는 장비의 SNMP Agent와 통신하여 상태 정보를 조회하거나 설정을 변경한다.</strong></li>
+<li><strong>초심자 해설</strong>:</li>
+<li>관리자 PC(Manager)가 스위치나 라우터에 상주하는 대리인(Agent)에게 시스템 상태를 물어보고 원격 제어하는 프로토콜입니다.</li>
+</div>
+<div class='question-box'><h3 class='q-title'>17. DHCP의 IP 주소 할당 방식에 해당하지 않는 것은?</h3>
+<li><strong>정답</strong>: <strong>④ 우선순위 할당 (Priority Allocation)</strong></li>
+<li><strong>초심자 해설</strong>:</li>
+<li>DHCP의 공식 할당 방식 3가지:</li>
+<p>1. <strong>수동 할당(Manual)</strong>: 특정 MAC 주소에 고정 IP 매핑</p>
+<p>2. <strong>자동 할당(Automatic)</strong>: 한 번 할당하면 영구 보존</p>
+<p>3. <strong>동적 할당(Dynamic)</strong>: 일정 시간 임대 후 반납/연장</p>
+</div>
+<h1 class='title'>2과목: 네트워크 일반 (18번 ~ 27번)</h1>
+<div class='question-box'><h3 class='q-title'>18. OSI 7계층 중 암호/복호, 압축, 코드 변환을 수행하는 계층은?</h3>
+<li><strong>정답</strong>: <strong>③ Presentation Layer (표현 계층, 6계층)</strong></li>
+<li><strong>초심자 해설</strong>:</li>
+<li>서로 다른 시스템 간에 데이터를 이해할 수 있도록 번역해 주는 <strong>통역관</strong> 역할을 합니다. (데이터 표현, 암호화, 압축 등)</li>
+</div>
+<div class='question-box'><h3 class='q-title'>19. 에러 발생 블록으로 되돌아가 그 이후 모든 블록을 재전송하는 ARQ 방식은?</h3>
+<li><strong>정답</strong>: <strong>① Go-back-N ARQ</strong></li>
+<li><strong>초심자 해설</strong>:</li>
+<li>N번 블록에서 에러가 나면 N번으로 다시 되돌아가서(Go back to N) 그 뒤의 모든 데이터를 싹 다 다시 전송합니다.</li>
+<li>참고: 에러 난 것만 쏙 골라서 다시 보내는 것은 <code>Selective Repeat ARQ</code>입니다.</li>
+</div>
+<div class='question-box'><h3 class='q-title'>20. 제어 평면과 데이터 평면을 분리하여 소프트웨어로 네트워크를 중앙 제어하는 기술은?</h3>
+<li><strong>정답</strong>: <strong>② SDN (Software Defined Networking)</strong></li>
+<li><strong>초심자 해설</strong>:</li>
+<li>장비마다 직접 접속하지 않고, 중앙 컨트롤러 소프트웨어가 네트워크 장비들의 동작과 규칙을 프로그래밍 방식으로 조종하는 기술입니다.</li>
+</div>
+<div class='question-box'><h3 class='q-title'>21. 물리 스위치 하나를 여러 개의 논리적 브로드캐스트 도메인으로 분리하는 기술은?</h3>
+<li><strong>정답</strong>: <strong>④ VLAN (Virtual Local Area Network)</strong></li>
+<li><strong>초심자 해설</strong>:</li>
+<li>물리적으로는 1대의 스위치지만, 가상(Virtual)으로 포트를 분할하여 인사팀, 개발팀 등 네트워크 구역을 독립적으로 쪼개는 기술입니다.</li>
+</div>
+<div class='question-box'><h3 class='q-title'>22. 클라우드 배포 모델(Deployment Model)로 옳지 않은 것은?</h3>
+<li><strong>정답</strong>: <strong>② on-premises (온프레미스)</strong></li>
+<li><strong>초심자 해설</strong>:</li>
+<li>클라우드 배포 모델 3가지는 <strong>Public(공용)</strong>, <strong>Private(전용)</strong>, <strong>Hybrid(혼합)</strong>입니다.</li>
+<li><strong>On-premises</strong>는 클라우드를 쓰지 않고 회사 전산실에 자체 서버를 직접 구축해 두는 전통적인 운영 방식입니다.</li>
+</div>
+<div class='question-box'><h3 class='q-title'>23. 기가비트 이더넷(1Gbps) 규격으로 옳은 것은?</h3>
+<li><strong>정답</strong>: <strong>① 1000Base-SX</strong></li>
+<li><strong>초심자 해설</strong>:</li>
+<li><code>1000</code>은 1000Mbps(=1Gbps), <code>SX</code>는 Short Wavelength(단파장 광케이블)를 뜻하는 대표적인 기가비트 이더넷 표준입니다.</li>
+</div>
+<div class='question-box'><h3 class='q-title'>24. VPN 3계층 터널링 프로토콜로 전송/터널 모드를 지원하는 것은?</h3>
+<li><strong>정답</strong>: <strong>③ IPsec</strong></li>
+<li><strong>초심자 해설</strong>:</li>
+<li>OSI 3계층(IP 계층)에서 데이터를 안전하게 암호화하고 가상 사설망(VPN)을 뚫어주는 표준 기술이 <strong>IPsec</strong>입니다.</li>
+</div>
+<div class='question-box'><h3 class='q-title'>25. 성형(Star, 별 모양) 토폴로지 설명으로 옳지 않은 것은?</h3>
+<li><strong>정답</strong>: <strong>③ 하나의 단말장치가 고장나면 전체 통신망에 영향을 줄 수 있다.</strong></li>
+<li><strong>초심자 해설</strong>:</li>
+<li>중앙의 공유기(허브)에 각 컴퓨터가 1:1로 연결된 구조입니다.</li>
+<li>특정 방의 컴퓨터 선이 빠지거나 고장 나도 다른 컴퓨터들의 인터넷 통신에는 아무런 영향을 주지 않습니다.</li>
+</div>
+<div class='question-box'><h3 class='q-title'>26. 네트워크 기능 가상화(NFV)의 가장 큰 장점은?</h3>
+<li><strong>정답</strong>: <strong>① 방화벽, 라우터 등의 네트워크 기능을 소프트웨어(VNF)로 구현하여 유연하게 배포/확장한다.</strong></li>
+<li><strong>초심자 해설</strong>:</li>
+<li>고가의 방화벽/라우터 하드웨어 장비를 일일이 구매하지 않고, 소프트웨어 형태로 간편하게 설치하고 증설할 수 있게 해줍니다.</li>
+</div>
+<div class='question-box'><h3 class='q-title'>27. TCP/IP 전송(Transport, 4계층) 프로토콜은?</h3>
+<li><strong>정답</strong>: <strong>② UDP (User Datagram Protocol)</strong></li>
+<li><strong>초심자 해설</strong>:</li>
+<li>전송 계층의 대표 주자는 <strong>TCP</strong>와 <strong>UDP</strong> 딱 2가지입니다.</li>
+</div>
+<h1 class='title'>3과목: NOS (운영체제) (28번 ~ 45번)</h1>
+<div class='question-box'><h3 class='q-title'>28. DNS 레코드 중 IP 주소를 도메인 이름으로 역변환(역방향 조회)하는 레코드는?</h3>
+<li><strong>정답</strong>: <strong>③ PTR (Pointer)</strong></li>
+<li><strong>초심자 해설</strong>:</li>
+<li>도메인 ➔ IP (정방향): <strong>A</strong> (IPv4), <strong>AAAA</strong> (IPv6)</li>
+<li>IP ➔ 도메인 (역방향): <strong>PTR</strong> (주소를 가리킨다 하여 포인터 레코드)</li>
+</div>
+<div class='question-box'><h3 class='q-title'>29. Windows Server IIS 웹 서버 설명으로 옳지 않은 것은?</h3>
+<li><strong>정답</strong>: <strong>① 기본 웹사이트의 홈디렉터리는 반드시 'C:\inetpub\wwwroot'로 설정해야 한다.</strong></li>
+<li><strong>초심자 해설</strong>:</li>
+<li>기본 폴더가 <code>C:\inetpub\wwwroot</code>일 뿐, 관리자가 <code>D:\web</code> 등 원하는 폴더나 드라이브로 얼마든지 바꿀 수 있습니다.</li>
+</div>
+<div class='question-box'><h3 class='q-title'>30. Windows PowerShell 설명으로 옳지 않은 것은?</h3>
+<li><strong>정답</strong>: <strong>① 기존 DOS 명령은 사용할 수 없다.</strong></li>
+<li><strong>초심자 해설</strong>:</li>
+<li>파워셸은 과거 명령 프롬프트(cmd/DOS) 사용자 편의를 위해 <code>dir</code>, <code>cd</code>, <code>cls</code> 등의 명령어도 별칭(Alias)으로 지원합니다.</li>
+</div>
+<div class='question-box'><h3 class='q-title'>31. 리눅스 디렉터리 구조 설명으로 옳지 않은 것은?</h3>
+<li><strong>정답</strong>: <strong>④ /usr - 사용자 계정이 위치하는 파티션 위치</strong></li>
+<li><strong>초심자 해설</strong>:</li>
+<li>일반 사용자 계정 폴더는 <code>/home</code> 디렉터리에 위치합니다.</li>
+<li><code>/usr</code>는 윈도우의 <code>Program Files</code>처럼 일반 소프트웨어와 명령어 파일들이 설치되는 곳입니다.</li>
+</div>
+<div class='question-box'><h3 class='q-title'>32. Windows Server DHCP 설정 설명으로 옳은 것은?</h3>
+<li><strong>정답</strong>: <strong>④ DHCP 서버에서 주소를 분배할 때, 적용할 지연시간은 ms 단위로 지정한다.</strong></li>
+<li><strong>초심자 해설</strong>:</li>
+<li>보조 DHCP 서버가 메인 서버보다 늦게 IP를 주도록 지연시간(Delay)을 설정할 때 밀리초(ms) 단위를 사용합니다.</li>
+</div>
+<div class='question-box'><h3 class='q-title'>33. <code>/etc/passwd</code> 파일 내용 중 옳지 않은 것은?</h3>
+<li>지문: <code>user1:x:500:500::/home/user1:/bin/bash</code></li>
+<li><strong>정답</strong>: <strong>② 패스워드는 'x'이다.</strong></li>
+<li><strong>초심자 해설</strong>:</li>
+<li>두 번째 항목의 <code>x</code>는 실제 비밀번호가 아니라, 보안상 암호화된 비밀번호가 별도의 비밀 파일인 <code>/etc/shadow</code>에 저장되어 있음을 나타내는 기호입니다.</li>
+</div>
+<div class='question-box'><h3 class='q-title'>34. 리눅스에서 프로세스 상태와 자원 사용량을 실시간 모니터링하는 명령어는?</h3>
+<li><strong>정답</strong>: <strong>② top</strong></li>
+<li><strong>초심자 해설</strong>:</li>
+<li>윈도우의 '작업 관리자'처럼 1초마다 화면이 새로고침되면서 CPU와 메모리를 점유 중인 프로세스 목록을 실시간으로 보여줍니다.</li>
+</div>
+<div class='question-box'><h3 class='q-title'>35. Windows Server <code>netstat</code> 중 라우팅 테이블을 확인하는 옵션은?</h3>
+<li><strong>정답</strong>: <strong>② netstat -r</strong></li>
+<li><strong>초심자 해설</strong>:</li>
+<li>Routing Table(경로표)의 앞 글자 <strong><code>r</code></strong>을 기억하시면 됩니다.</li>
+</div>
+<div class='question-box'><h3 class='q-title'>36. Active Directory에서 도메인 간 상호 신뢰 관계를 칭하는 용어는?</h3>
+<li><strong>정답</strong>: <strong>② 트러스트 (Trust)</strong></li>
+<li><strong>초심자 해설</strong>:</li>
+<li>두 회사나 부서의 도메인이 서로를 믿고 자원을 상호 이용할 수 있도록 맺어주는 신뢰 조약을 <strong>트러스트(Trust)</strong>라고 부릅니다.</li>
+</div>
+<div class='question-box'><h3 class='q-title'>37. FTP 전송 모드 중 서버가 임의의 데이터 포트를 열고 클라이언트가 접속하는 방식은?</h3>
+<li><strong>정답</strong>: <strong>② Passive Mode (수동 모드)</strong></li>
+<li><strong>초심자 해설</strong>:</li>
+<li>클라이언트의 방화벽 차단 문제를 해결하기 위해, 서버가 포트를 열고 클라이언트가 서버로 접속(Inbound)하게 만드는 방식을 <strong>Passive Mode</strong>라고 합니다.</li>
+</div>
+<div class='question-box'><h3 class='q-title'>38. 리눅스 부팅 과정에서 발생한 커널 및 하드웨어 점검 로그가 저장되는 파일은?</h3>
+<li><strong>정답</strong>: <strong>③ /var/log/dmesg</strong></li>
+<li><strong>초심자 해설</strong>:</li>
+<li>컴퓨터 부팅 시 장치 인식 결과와 커널 메시지는 <code>/var/log/dmesg</code>에 기록되며, <code>dmesg</code> 명령어로도 확인 가능합니다.</li>
+</div>
+<div class='question-box'><h3 class='q-title'>39. 리눅스에서 현재 열려 있는 포트(Port) 정보를 확인하는 명령어는?</h3>
+<li><strong>정답</strong>: <strong>④ netstat</strong></li>
+<li><strong>초심자 해설</strong>:</li>
+<li>네트워크 통계 및 열린 포트 상태(<code>LISTEN</code>)를 확인할 때 <code>netstat -natp</code> 명령을 씁니다.</li>
+</div>
+<div class='question-box'><h3 class='q-title'>40. 리눅스에서 <code>sample</code> 파일에 대해 소유자/그룹 외 다른 사람은 "읽기만 가능"하게 설정하는 명령어는?</h3>
+<li><strong>정답</strong>: <strong>② chmod 774 sample</strong></li>
+<li><strong>초심자 해설</strong>:</li>
+<li>권한 점수: 읽기(r)=4, 쓰기(w)=2, 실행(x)=1</li>
+<li>소유자: 다 줌 = <em>4+2+1 = 7</em></li>
+<li>소유그룹: 다 줌 = <em>4+2+1 = 7</em></li>
+<li>기타 사용자: 읽기만 = <em>4</em></li>
+<li>합쳐서 <strong><code>chmod 774 sample</code></strong></li>
+</div>
+<div class='question-box'><h3 class='q-title'>41. 리눅스 프로세스 검색 결과 화면 설명 중 옳지 않은 것은?</h3>
+<li><strong>정답</strong>: <strong>② 네번째 프로세스의 PPID는 1869이다.</strong></li>
+<li><strong>초심자 해설</strong>:</li>
+<li>출력 순서: <code>UID / PID(자신의 번호) / PPID(부모의 번호) ...</code></li>
+<li>네 번째 줄: <code>lcqa 1869 1868 ...</code></li>
+<li>즉, 자신의 PID가 1869이고 <strong>부모 프로세스 ID(PPID)는 1868</strong>입니다. 따라서 지문은 거짓입니다.</li>
+</div>
+<div class='question-box'><h3 class='q-title'>42. systemctl 명령의 올바르지 않은 사용 예는?</h3>
+<li><strong>정답</strong>: <strong>④ systemctl passwd root</strong></li>
+<li><strong>초심자 해설</strong>:</li>
+<li><code>systemctl</code>은 웹 서버나 SSH 같은 백그라운드 서비스(데몬)를 시작/정지하는 명령입니다.</li>
+<li>사용자 비밀번호를 변경할 때는 그냥 <strong><code>passwd</code></strong> 명령어를 사용합니다.</li>
+</div>
+<div class='question-box'><h3 class='q-title'>43. Windows Server 도메인 사용자 계정 관리에 대한 옳은 설명은?</h3>
+<li><strong>정답</strong>: <strong>④ Active Directory 사용자 및 컴퓨터에서 도메인 사용자 계정을 생성하고 보안 그룹의 구성원으로 추가할 수 있다.</strong></li>
+<li><strong>초심자 해설</strong>:</li>
+<li>AD 관리 도구인 'Active Directory 사용자 및 컴퓨터'에서 사원 계정을 발급하고 보안 그룹에 소속시키는 것이 표준 작업 방식입니다.</li>
+</div>
+<div class='question-box'><h3 class='q-title'>44. IIS 웹 사이트 바인딩 및 기본 포트 설명으로 옳은 것은?</h3>
+<li><strong>정답</strong>: <strong>③ HTTP의 기본 포트는 80번이고, HTTPS의 기본 포트는 443번이다.</strong></li>
+<li><strong>초심자 해설</strong>:</li>
+<li>시험 단골 필수 포트: 일반 웹(<strong>HTTP</strong>)은 <strong>80</strong>, 보안 암호화 웹(<strong>HTTPS</strong>)은 <strong>443</strong>입니다.</li>
+</div>
+<div class='question-box'><h3 class='q-title'>45. Hyper-V 가상 머신의 현재 시점을 저장하고 되돌릴 수 있는 기능은?</h3>
+<li><strong>정답</strong>: <strong>④ 검사점 (Checkpoint)</strong></li>
+<li><strong>초심자 해설</strong>:</li>
+<li>게임의 세이브 포인트처럼 패치나 실험 전에 상태를 찍어두고 문제 발생 시 복원하는 기능을 Hyper-V에서는 <strong>검사점(Checkpoint)</strong>이라고 부릅니다.</li>
+</div>
+<h1 class='title'>4과목: 네트워크 운용기기 (46번 ~ 50번)</h1>
+<div class='question-box'><h3 class='q-title'>46. L4 스위치(Layer 4 Switch) 설명으로 옳지 않은 것은?</h3>
+<li><strong>정답</strong>: <strong>② OSI 7계층 중 네트워크 계층에 해당하는 장비이다.</strong></li>
+<li><strong>초심자 해설</strong>:</li>
+<li>이름 그대로 <strong>L4</strong> 스위치는 OSI <strong>4계층(전송 계층, Transport Layer)</strong>의 TCP/UDP 포트 번호를 분석해 트래픽을 분산(로드 밸런싱)해 주는 장비입니다.</li>
+<li>3계층(네트워크 계층) 장비는 라우터나 L3 스위치입니다.</li>
+</div>
+<div class='question-box'><h3 class='q-title'>47. 복수의 VLAN 트래픽을 다른 스위치로 전달하기 위한 연결 인터페이스는?</h3>
+<li><strong>정답</strong>: <strong>② 트렁크 (Trunk)</strong></li>
+<li><strong>초심자 해설</strong>:</li>
+<li>일반 포트는 1개 VLAN만 지나다니지만, 스위치끼리 연결하여 10번, 20번, 30번 VLAN 트래픽을 꼬리표를 붙여 한 번에 나르는 고속도로 통로를 <strong>트렁크(Trunk)</strong>라고 부릅니다.</li>
+</div>
+<div class='question-box'><h3 class='q-title'>48. 라우팅 프로토콜 중 거리 벡터(Distance Vector) 방식이 아닌 것은?</h3>
+<li><strong>정답</strong>: <strong>④ OSPF</strong></li>
+<li><strong>초심자 해설</strong>:</li>
+<li><strong>거리 벡터(Distance Vector)</strong>: 단순히 방향과 거리(홉 수)만 봄 ➔ <code>RIP</code>, <code>IGRP</code>, <code>BGP</code></li>
+<li><strong>링크 상태(Link State)</strong>: 전체 지도를 그려서 최단 경로 계산 ➔ <strong><code>OSPF</code></strong> (다익스트라 알고리즘 사용)</li>
+</div>
+<div class='question-box'><h3 class='q-title'>49. 방화벽의 기능으로 옳은 설명은?</h3>
+<li><strong>정답</strong>: <strong>② 방화벽은 사전에 정의된 보안 정책과 접근 제어 규칙에 따라 네트워크 트래픽을 허용하거나 차단한다.</strong></li>
+<li><strong>초심자 해설</strong>:</li>
+<li>방화벽은 네트워크 건물의 <strong>경비실</strong>입니다. 사전에 작성된 규칙집(Rule)에 따라 외부 트래픽의 입출입을 통제합니다.</li>
+</div>
+<div class='question-box'><h3 class='q-title'>50. 빛을 이용하며 코어(Core)와 클래딩(Cladding)으로 구성된 전송 매체는?</h3>
+<li><strong>정답</strong>: <strong>② 광섬유 케이블 (Optical Fiber Cable)</strong></li>
+<li><strong>초심자 해설</strong>:</li>
+<li>빛의 전반사 원리를 이용하여 초고속으로 데이터를 보내는 케이블로, 중심의 빛이 흐르는 유리 심지를 <strong>코어(Core)</strong>, 밖으로 빛이 새지 않게 감싸는 부분을 <strong>클래딩(Cladding)</strong>이라고 합니다.</li>
+</div>
+</body>
+</html>

@@ -1,0 +1,1204 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>네트워크관리사 2급 필기 기출문제 스마트 학습관</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --primary-light: #eff6ff;
+      --primary-border: #bfdbfe;
+      --success: #10b981;
+      --success-light: #ecfdf5;
+      --danger: #ef4444;
+      --danger-light: #fef2f2;
+      --warning: #f59e0b;
+      --text-main: #0f172a;
+      --text-sub: #475569;
+      --text-muted: #94a3b8;
+      --bg-page: #f8fafc;
+      --bg-card: #ffffff;
+      --border-card: #e2e8f0;
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.04);
+      --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      line-height: 1.6;
+      font-size: 14px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Top Sticky Header */
+    header.app-header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-card);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .header-inner {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 12px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .header-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-logo {
+      width: 38px;
+      height: 38px;
+      background: linear-gradient(135deg, #2563eb, #1d4ed8);
+      color: #ffffff;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      font-weight: 800;
+      box-shadow: 0 2px 4px rgba(37, 99, 235, 0.3);
+    }
+
+    .brand-title h1 {
+      font-size: 17px;
+      font-weight: 800;
+      color: #1e3a8a;
+      letter-spacing: -0.3px;
+    }
+
+    .brand-title p {
+      font-size: 11.5px;
+      color: var(--text-muted);
+    }
+
+    /* Exam Date Banner Badge */
+    .exam-date-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+      border: 1px solid var(--primary-border);
+      padding: 6px 14px;
+      border-radius: 9999px;
+      color: #1e40af;
+      font-weight: 700;
+      font-size: 13px;
+      box-shadow: 0 1px 3px rgba(37, 99, 235, 0.08);
+    }
+
+    .exam-date-badge span.icon {
+      font-size: 15px;
+    }
+
+    /* Controls Bar: Exam Selector, Mode, Quick Answer */
+    .header-controls {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding-top: 4px;
+      border-top: 1px dashed #e2e8f0;
+    }
+
+    .exam-select-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .exam-select-group label {
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--text-sub);
+    }
+
+    select.exam-dropdown {
+      padding: 6px 12px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #1e3a8a;
+      background-color: #ffffff;
+      border: 1.5px solid var(--primary);
+      border-radius: var(--radius-sm);
+      outline: none;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    select.exam-dropdown:focus {
+      border-color: var(--primary-hover);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+    }
+
+    .toolbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      font-size: 12.5px;
+      font-weight: 600;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: var(--transition);
+      user-select: none;
+    }
+
+    .btn-primary {
+      background-color: var(--primary);
+      color: #ffffff;
+    }
+    .btn-primary:hover {
+      background-color: var(--primary-hover);
+    }
+
+    .btn-outline {
+      background-color: #ffffff;
+      color: var(--text-sub);
+      border-color: var(--border-card);
+    }
+    .btn-outline:hover {
+      background-color: #f1f5f9;
+      color: var(--text-main);
+    }
+
+    .btn-accent {
+      background-color: #f0fdf4;
+      color: #15803d;
+      border-color: #bbf7d0;
+    }
+    .btn-accent:hover {
+      background-color: #dcfce7;
+    }
+
+    /* Score & Subject Filter Bar */
+    .sub-bar {
+      max-width: 1000px;
+      margin: 14px auto 0;
+      padding: 0 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      width: 100%;
+    }
+
+    .subject-tabs {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .tab-btn {
+      padding: 5px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      background: #ffffff;
+      border: 1px solid var(--border-card);
+      border-radius: 9999px;
+      color: var(--text-sub);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .tab-btn:hover {
+      background: #f1f5f9;
+      color: var(--text-main);
+    }
+
+    .tab-btn.active {
+      background: #1e3a8a;
+      color: #ffffff;
+      border-color: #1e3a8a;
+    }
+
+    .score-card {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: #ffffff;
+      border: 1px solid var(--border-card);
+      padding: 5px 12px;
+      border-radius: 9999px;
+      font-size: 12px;
+    }
+
+    .score-pill {
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .score-pill.correct { color: var(--success); }
+    .score-pill.wrong { color: var(--danger); }
+    .score-pill.total { color: var(--primary); }
+
+    /* Main Container */
+    main.content-area {
+      max-width: 1000px;
+      margin: 16px auto 30px;
+      padding: 0 20px;
+      width: 100%;
+      flex: 1;
+    }
+
+    /* Paging Floating Bar (Top & Bottom) */
+    .pagination-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #ffffff;
+      border: 1px solid var(--border-card);
+      border-radius: var(--radius-md);
+      padding: 10px 16px;
+      margin-bottom: 18px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .pagination-nav {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .page-indicator {
+      font-weight: 700;
+      color: #1e3a8a;
+      font-size: 13.5px;
+    }
+
+    .page-dots {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex-wrap: wrap;
+    }
+
+    .page-dot-btn {
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 600;
+      background: #f8fafc;
+      border: 1px solid var(--border-card);
+      color: var(--text-sub);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .page-dot-btn:hover {
+      background: #e2e8f0;
+    }
+
+    .page-dot-btn.active {
+      background: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
+    }
+
+    .page-dot-btn.answered-correct {
+      border-bottom: 2.5px solid var(--success);
+    }
+
+    .page-dot-btn.answered-wrong {
+      border-bottom: 2.5px solid var(--danger);
+    }
+
+    /* Questions Wrapper & Slide Transition */
+    .questions-container {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      animation: fadeIn 0.25s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Question Box */
+    .question-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: var(--radius-md);
+      padding: 18px 20px;
+      box-shadow: var(--shadow-sm);
+      transition: var(--transition);
+      position: relative;
+    }
+
+    .question-card:hover {
+      box-shadow: var(--shadow-md);
+      border-color: #cbd5e1;
+    }
+
+    .question-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .q-badge-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .q-number-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 32px;
+      height: 26px;
+      padding: 0 8px;
+      background: #1e3a8a;
+      color: #ffffff;
+      border-radius: 6px;
+      font-weight: 800;
+      font-size: 13px;
+    }
+
+    .q-subject-badge {
+      font-size: 11.5px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 4px;
+      background: #eff6ff;
+      color: #2563eb;
+      border: 1px solid #dbeafe;
+    }
+
+    .q-status-badge {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 4px;
+      display: none;
+    }
+    .q-status-badge.correct {
+      display: inline-block;
+      background: #dcfce7;
+      color: #15803d;
+      border: 1px solid #bbf7d0;
+    }
+    .q-status-badge.wrong {
+      display: inline-block;
+      background: #fee2e2;
+      color: #b91c1c;
+      border: 1px solid #fecaca;
+    }
+
+    /* Question Title / Stem */
+    .q-stem {
+      font-size: 15px;
+      font-weight: 700;
+      color: #0f172a;
+      line-height: 1.55;
+      margin-bottom: 14px;
+    }
+
+    /* Embedded Question Image (Diagram, Code, Box) */
+    .q-image-box {
+      margin: 10px 0 16px 0;
+      padding: 8px;
+      background: #f8fafc;
+      border: 1px dashed #cbd5e1;
+      border-radius: var(--radius-sm);
+      display: inline-block;
+      max-width: 100%;
+    }
+
+    .q-image-box img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 4px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+
+    /* 4-Options (① ② ③ ④) */
+    .options-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .option-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 9px 14px;
+      border: 1.5px solid var(--border-card);
+      border-radius: var(--radius-sm);
+      background-color: #ffffff;
+      cursor: pointer;
+      transition: var(--transition);
+      user-select: none;
+    }
+
+    .option-item:hover {
+      background-color: #f8fafc;
+      border-color: #94a3b8;
+    }
+
+    .option-symbol {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      font-weight: 700;
+      font-size: 13px;
+      color: var(--text-sub);
+      background-color: #f1f5f9;
+      flex-shrink: 0;
+      transition: var(--transition);
+    }
+
+    .option-text {
+      font-size: 13.5px;
+      color: var(--text-main);
+      font-weight: 500;
+      flex: 1;
+      line-height: 1.45;
+    }
+
+    /* Selected / Evaluated Option Styles */
+    .option-item.selected {
+      border-color: var(--primary);
+      background-color: var(--primary-light);
+    }
+    .option-item.selected .option-symbol {
+      background-color: var(--primary);
+      color: #ffffff;
+    }
+
+    .option-item.is-correct {
+      border-color: var(--success) !important;
+      background-color: var(--success-light) !important;
+    }
+    .option-item.is-correct .option-symbol {
+      background-color: var(--success) !important;
+      color: #ffffff !important;
+    }
+
+    .option-item.is-wrong {
+      border-color: var(--danger) !important;
+      background-color: var(--danger-light) !important;
+    }
+    .option-item.is-wrong .option-symbol {
+      background-color: var(--danger) !important;
+      color: #ffffff !important;
+    }
+
+    /* Toggle Accordion for Answer & Explanation */
+    .accordion-toggle-btn {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 14px;
+      background-color: #f8fafc;
+      border: 1px solid var(--border-card);
+      border-radius: var(--radius-sm);
+      color: #1e40af;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: var(--transition);
+      outline: none;
+    }
+
+    .accordion-toggle-btn:hover {
+      background-color: #eff6ff;
+      border-color: var(--primary-border);
+    }
+
+    .accordion-toggle-btn .arrow-icon {
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      font-size: 12px;
+    }
+
+    .accordion-toggle-btn.open .arrow-icon {
+      transform: rotate(180deg);
+    }
+
+    /* Explanation Content Accordion (Smooth Dropdown) */
+    .explanation-wrapper {
+      max-height: 0;
+      opacity: 0;
+      overflow: hidden;
+      transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease, margin 0.3s ease;
+      margin-top: 0;
+    }
+
+    .explanation-wrapper.open {
+      max-height: 1200px;
+      opacity: 1;
+      margin-top: 10px;
+    }
+
+    .explanation-box {
+      background: #fafafa;
+      border: 1px solid #e2e8f0;
+      border-left: 4px solid var(--primary);
+      border-radius: var(--radius-sm);
+      padding: 14px 16px;
+      font-size: 13px;
+      color: #334155;
+    }
+
+    .explanation-box .ans-highlight {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      padding: 6px 12px;
+      border-radius: 6px;
+      margin-bottom: 10px;
+      font-weight: 700;
+      color: #1e3a8a;
+      font-size: 13.5px;
+    }
+
+    .explanation-box p {
+      margin: 4px 0;
+    }
+
+    .explanation-box ul, .explanation-box li {
+      margin: 3px 0;
+      list-style-type: none;
+    }
+
+    .explanation-box code {
+      background: #f1f5f9;
+      color: #c2410c;
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-family: Consolas, monospace;
+      font-size: 12px;
+    }
+
+    .explanation-box strong {
+      color: #1d4ed8;
+    }
+
+    /* Quick Answers Modal */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(4px);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+
+    .modal-backdrop.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-panel {
+      background: #ffffff;
+      border-radius: var(--radius-lg);
+      width: 100%;
+      max-width: 720px;
+      max-height: 85vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: var(--shadow-lg);
+      transform: translateY(20px);
+      transition: transform 0.25s ease;
+      overflow: hidden;
+    }
+
+    .modal-backdrop.active .modal-panel {
+      transform: translateY(0);
+    }
+
+    .modal-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border-card);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .modal-header h3 {
+      font-size: 16px;
+      font-weight: 700;
+      color: #1e3a8a;
+    }
+
+    .modal-close-btn {
+      background: none;
+      border: none;
+      font-size: 20px;
+      color: var(--text-muted);
+      cursor: pointer;
+      line-height: 1;
+    }
+
+    .modal-body {
+      padding: 20px;
+      overflow-y: auto;
+    }
+
+    .answer-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+      text-align: center;
+    }
+
+    .answer-table th, .answer-table td {
+      border: 1px solid #cbd5e1;
+      padding: 6px 4px;
+    }
+
+    .answer-table th {
+      background: #2563eb;
+      color: #ffffff;
+      font-weight: 600;
+    }
+
+    .answer-table tr:nth-child(even) {
+      background: #f8fafc;
+    }
+
+    .answer-table td strong {
+      color: #1e3a8a;
+    }
+
+    /* ===== Exam Mode / Submit / Result ===== */
+    .btn.mode-exam {
+      background: linear-gradient(135deg, #7c3aed, #6366f1);
+      color: #ffffff;
+      border-color: transparent;
+    }
+    .btn.mode-instant {
+      background: #ffffff;
+      color: #7c3aed;
+      border: 1px solid #ddd6fe;
+    }
+    .btn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    .exam-mode-hint {
+      max-width: 1000px;
+      margin: 12px auto 0;
+      padding: 10px 16px;
+      border-radius: var(--radius-md);
+      background: linear-gradient(135deg, #f5f3ff 0%, #eef2ff 100%);
+      border: 1px solid #ddd6fe;
+      color: #5b21b6;
+      font-size: 12.5px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .exam-mode-hint.done {
+      background: linear-gradient(135deg, #ecfdf5 0%, #f0fdf4 100%);
+      border-color: #bbf7d0;
+      color: #166534;
+    }
+
+    .q-status-badge.unanswered {
+      display: inline-block;
+      background: #f1f5f9;
+      color: #475569;
+      border: 1px solid #e2e8f0;
+    }
+    .question-card.locked .option-item { cursor: default; }
+    .question-card.locked .option-item:hover { background-color: inherit; }
+    .question-card.flash {
+      animation: cardFlash 1.4s ease;
+    }
+    @keyframes cardFlash {
+      0%, 100% { box-shadow: var(--shadow-sm); }
+      30% { box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.35); }
+    }
+
+    /* Submit panel at the end of the list */
+    .submit-panel {
+      margin: 24px 0 8px;
+      padding: 22px 20px;
+      border-radius: var(--radius-lg);
+      background: linear-gradient(135deg, #1e3a8a 0%, #4f46e5 60%, #7c3aed 100%);
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      box-shadow: 0 12px 24px -10px rgba(79, 70, 229, 0.55);
+    }
+    .submit-panel h3 { font-size: 16px; font-weight: 800; }
+    .submit-panel p { font-size: 12.5px; opacity: 0.85; margin-top: 2px; }
+    .submit-progress {
+      margin-top: 10px;
+      width: 260px;
+      max-width: 100%;
+      height: 8px;
+      border-radius: 9999px;
+      background: rgba(255, 255, 255, 0.25);
+      overflow: hidden;
+    }
+    .submit-progress > div {
+      height: 100%;
+      background: linear-gradient(90deg, #a5f3fc, #ffffff);
+      border-radius: 9999px;
+      transition: width 0.35s ease;
+    }
+    .submit-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+    .btn-white {
+      background: #ffffff;
+      color: #3730a3;
+      border: none;
+      font-weight: 800;
+    }
+    .btn-white:hover { transform: translateY(-1px); box-shadow: 0 6px 14px rgba(0,0,0,0.18); }
+    .btn-ghost-white {
+      background: rgba(255, 255, 255, 0.12);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+    }
+    .btn-ghost-white:hover { background: rgba(255, 255, 255, 0.22); }
+
+    /* Floating submit button */
+    .floating-submit {
+      position: fixed;
+      right: 22px;
+      bottom: 22px;
+      z-index: 60;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 18px;
+      border-radius: 9999px;
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 800;
+      color: #ffffff;
+      background: linear-gradient(135deg, #4f46e5, #7c3aed);
+      box-shadow: 0 10px 24px -6px rgba(79, 70, 229, 0.6);
+      transition: var(--transition);
+    }
+    .floating-submit:hover { transform: translateY(-2px); }
+    .floating-submit .count {
+      background: rgba(255, 255, 255, 0.22);
+      padding: 2px 8px;
+      border-radius: 9999px;
+      font-size: 12px;
+    }
+    .floating-submit.ready {
+      animation: pulseReady 1.8s ease-in-out infinite;
+    }
+    @keyframes pulseReady {
+      0%, 100% { box-shadow: 0 10px 24px -6px rgba(79, 70, 229, 0.6); }
+      50% { box-shadow: 0 0 0 8px rgba(124, 58, 237, 0.18), 0 10px 24px -6px rgba(79, 70, 229, 0.6); }
+    }
+    .floating-submit.hidden { display: none; }
+
+    /* Result modal */
+    .result-panel { max-width: 760px; }
+    .result-hero {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      flex-wrap: wrap;
+      padding-bottom: 18px;
+      border-bottom: 1px dashed var(--border-card);
+      margin-bottom: 18px;
+    }
+    .score-ring {
+      --pct: 0;
+      --ring-color: #10b981;
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      background: conic-gradient(var(--ring-color) calc(var(--pct) * 1%), #e2e8f0 0);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .score-ring-inner {
+      width: 112px;
+      height: 112px;
+      border-radius: 50%;
+      background: #ffffff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .score-ring-inner b { font-size: 34px; font-weight: 900; line-height: 1; color: var(--text-main); }
+    .score-ring-inner span { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+    .result-summary { flex: 1; min-width: 220px; }
+    .pass-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 9999px;
+      font-weight: 800;
+      font-size: 13px;
+      margin-bottom: 8px;
+    }
+    .pass-badge.pass { background: #dcfce7; color: #15803d; }
+    .pass-badge.fail { background: #fee2e2; color: #b91c1c; }
+    .result-summary h4 { font-size: 15px; font-weight: 800; color: #1e3a8a; margin-bottom: 10px; }
+    .result-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .result-stat {
+      border-radius: var(--radius-md);
+      padding: 10px;
+      text-align: center;
+      border: 1px solid var(--border-card);
+    }
+    .result-stat b { display: block; font-size: 20px; font-weight: 900; }
+    .result-stat span { font-size: 11.5px; color: var(--text-sub); font-weight: 600; }
+    .result-stat.ok { background: var(--success-light); border-color: #bbf7d0; }
+    .result-stat.ok b { color: #15803d; }
+    .result-stat.ng { background: var(--danger-light); border-color: #fecaca; }
+    .result-stat.ng b { color: #b91c1c; }
+    .result-stat.na { background: #f8fafc; }
+    .result-stat.na b { color: #475569; }
+
+    .result-section-title {
+      font-size: 13.5px;
+      font-weight: 800;
+      color: #1e3a8a;
+      margin: 18px 0 10px;
+    }
+    .subject-bars { display: flex; flex-direction: column; gap: 8px; }
+    .subject-bar-row {
+      display: grid;
+      grid-template-columns: 150px 1fr 70px;
+      align-items: center;
+      gap: 10px;
+      font-size: 12.5px;
+    }
+    .subject-bar-row .label { font-weight: 700; color: var(--text-sub); }
+    .subject-bar-row .track { height: 10px; background: #e2e8f0; border-radius: 9999px; overflow: hidden; }
+    .subject-bar-row .fill { height: 100%; border-radius: 9999px; background: linear-gradient(90deg, #6366f1, #10b981); }
+    .subject-bar-row .val { text-align: right; font-weight: 700; color: var(--text-main); }
+
+    .result-grid { display: grid; grid-template-columns: repeat(10, 1fr); gap: 6px; }
+    .result-cell {
+      border: none;
+      border-radius: 8px;
+      padding: 7px 0 5px;
+      font-family: inherit;
+      font-weight: 800;
+      font-size: 12.5px;
+      cursor: pointer;
+      line-height: 1.15;
+      transition: var(--transition);
+    }
+    .result-cell small { display: block; font-size: 10px; font-weight: 700; opacity: 0.85; }
+    .result-cell:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+    .result-cell.ok { background: #dcfce7; color: #15803d; }
+    .result-cell.ng { background: #fee2e2; color: #b91c1c; }
+    .result-cell.na { background: #f1f5f9; color: #64748b; }
+    .result-legend { display: flex; gap: 14px; font-size: 11.5px; color: var(--text-sub); margin-top: 8px; }
+    .result-legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 4px; vertical-align: -1px; }
+
+    .wrong-list { display: flex; flex-direction: column; gap: 6px; }
+    .wrong-item {
+      display: grid;
+      grid-template-columns: 44px 1fr auto;
+      gap: 10px;
+      align-items: center;
+      padding: 8px 12px;
+      border: 1px solid #fecaca;
+      background: #fffafa;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-size: 12.5px;
+      transition: var(--transition);
+    }
+    .wrong-item:hover { background: #fef2f2; }
+    .wrong-item .num { font-weight: 900; color: #b91c1c; }
+    .wrong-item .stem { color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .wrong-item .ans { font-weight: 700; color: var(--text-sub); white-space: nowrap; }
+    .wrong-item .ans .mine { color: #b91c1c; }
+    .wrong-item .ans .right { color: #15803d; }
+    .result-footer {
+      padding: 14px 20px;
+      border-top: 1px solid var(--border-card);
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    @media (max-width: 640px) {
+      .result-grid { grid-template-columns: repeat(5, 1fr); }
+      .subject-bar-row { grid-template-columns: 100px 1fr 56px; }
+      .wrong-item { grid-template-columns: 36px 1fr; }
+      .wrong-item .ans { grid-column: 2; }
+      .floating-submit { right: 14px; bottom: 14px; }
+    }
+
+    /* Footer */
+    footer.app-footer {
+      border-top: 1px solid var(--border-card);
+      background: #ffffff;
+      padding: 16px 20px;
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: auto;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 640px) {
+      .header-inner { padding: 10px 14px; }
+      .brand-title h1 { font-size: 15px; }
+      .exam-date-badge { font-size: 12px; padding: 4px 10px; }
+      .sub-bar { padding: 0 14px; }
+      main.content-area { padding: 0 14px; }
+      .question-card { padding: 14px 14px; }
+      .q-stem { font-size: 14px; }
+      .page-dots { display: none; } /* On mobile, use prev/next only */
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Sticky Header -->
+  <header class="app-header">
+    <div class="header-inner">
+      <div class="header-top">
+        <div class="brand">
+          <div class="brand-logo">N2</div>
+          <div class="brand-title">
+            <h1>네트워크관리사 2급 필기 스마트 학습관</h1>
+            <p id="brandSubtitle">기출문제 · 문제 출제양식 유지 · 원터치 정답/해설</p>
+          </div>
+        </div>
+        
+        <!-- Header Exam Date Badge -->
+        <div class="exam-date-badge" id="examDateBadge">
+          <span class="icon">📅</span>
+          <span id="currentDateText">2026년 08월 02일 필기 기출문제</span>
+        </div>
+      </div>
+
+      <!-- Controls Bar -->
+      <div class="header-controls">
+        <div class="exam-select-group">
+          <label for="examSelect">회차 선택:</label>
+          <select id="examSelect" class="exam-dropdown">
+            <!-- Populated dynamically via JS -->
+          </select>
+        </div>
+
+        <div class="toolbar-actions">
+          <button class="btn mode-exam" id="examModeBtn" title="시험 모드: 50문항을 모두 푼 뒤 '결과 확인'으로 한 번에 채점">
+            <span id="examModeIcon">📝</span> <span id="examModeText">시험 모드</span>
+          </button>
+          <button class="btn btn-outline" id="toggleAllAnswersBtn">
+            <span>👁️</span> <span id="toggleAllBtnText">해설 전체 열기</span>
+          </button>
+          <button class="btn btn-accent" id="quickAnswersBtn">
+            <span>📋</span> 빠른 정답표
+          </button>
+          <button class="btn btn-primary" id="viewModeToggleBtn">
+            <span>📄</span> <span id="viewModeText">한눈에 보기</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Sub Filter & Score Bar -->
+  <div class="sub-bar">
+    <div class="subject-tabs">
+      <button class="tab-btn active" data-subject="all">전체 과목 (50)</button>
+      <button class="tab-btn" data-subject="1과목: TCP/IP">1과목 TCP/IP (1~17)</button>
+      <button class="tab-btn" data-subject="2과목: 네트워크 일반">2과목 네트워크 일반 (18~27)</button>
+      <button class="tab-btn" data-subject="3과목: NOS">3과목 NOS (28~45)</button>
+      <button class="tab-btn" data-subject="4과목: 네트워크 운용기기">4과목 운용기기 (46~50)</button>
+      <button class="tab-btn" data-subject="wrong" id="wrongOnlyTab" style="display:none; color:#b91c1c;">❌ 오답만</button>
+    </div>
+
+    <div class="score-card">
+      <span class="score-pill total">진행: <b id="progressCount">0/50</b></span>
+      <span>|</span>
+      <span class="score-pill correct">정답: <b id="correctCount">0</b></span>
+      <span class="score-pill wrong">오답: <b id="wrongCount">0</b></span>
+      <span>|</span>
+      <span class="score-pill" style="color: #6366f1;">예상점수: <b id="scoreValue">0점</b></span>
+    </div>
+  </div>
+
+  <!-- Main Content Area -->
+  <main class="content-area">
+
+    <!-- Exam Mode Hint -->
+    <div class="exam-mode-hint" id="examModeHint"></div>
+    
+    <!-- Top Pagination Bar -->
+    <div class="pagination-bar" id="topPaginationBar">
+      <button class="btn btn-outline" id="prevPageBtn" title="이전 페이지 (단축키: ←)">
+        <span>◀</span> 이전 페이지
+      </button>
+
+      <div class="pagination-nav">
+        <span class="page-indicator" id="pageIndicator">1 / 10 페이지</span>
+        <div class="page-dots" id="pageDotsContainer">
+          <!-- Page numbers generated here -->
+        </div>
+      </div>
+
+      <button class="btn btn-primary" id="nextPageBtn" title="다음 페이지 (오른쪽 넘김 ➔, 단축키: →)">
+        다음 페이지 <span>▶</span>
+      </button>
+    </div>
+
+    <!-- Questions Container -->
+    <div class="questions-container" id="questionsContainer">
+      <!-- Question cards injected dynamically -->
+    </div>
+
+    <!-- Bottom Pagination Bar -->
+    <div class="pagination-bar" id="bottomPaginationBar" style="margin-top: 20px;">
+      <button class="btn btn-outline" id="prevPageBtnBottom">
+        <span>◀</span> 이전 페이지
+      </button>
+
+      <span class="page-indicator" id="pageIndicatorBottom">1 / 10 페이지</span>
+
+      <button class="btn btn-primary" id="nextPageBtnBottom">
+        다음 페이지 <span>▶</span>
+      </button>
+    </div>
+
+    <!-- Submit Panel (end of list) -->
+    <section class="submit-panel" id="submitPanel" aria-label="답안 제출">
+      <div>
+        <h3 id="submitPanelTitle">답안을 모두 입력했나요?</h3>
+        <p id="submitPanelDesc">50문항을 모두 푼 뒤 결과 확인을 누르면 점수와 오답을 알려드립니다.</p>
+        <div class="submit-progress"><div id="submitProgressFill" style="width:0%"></div></div>
+      </div>
+      <div class="submit-actions">
+        <button class="btn btn-ghost-white" id="resetExamBtn">🔄 다시 풀기</button>
+        <button class="btn btn-white" id="submitExamBtn">✅ 결과 확인</button>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Floating Submit Button -->
+  <button class="floating-submit" id="floatingSubmitBtn">
+    <span>✅ 결과 확인</span><span class="count" id="floatingSubmitCount">0/50</span>
+  </button>
+
+  <!-- Result Modal -->
+  <div class="modal-backdrop" id="resultModal">
+    <div class="modal-panel result-panel" role="dialog" aria-labelledby="resultTitle">
+      <div class="modal-header">
+        <h3 id="resultTitle">📊 채점 결과</h3>
+        <button class="modal-close-btn" id="resultCloseBtn">&times;</button>
+      </div>
+      <div class="modal-body" id="resultBody"></div>
+      <div class="result-footer">
+        <button class="btn btn-outline" id="resultRetryBtn">🔄 다시 풀기</button>
+        <button class="btn btn-outline" id="resultWrongOnlyBtn" style="color:#b91c1c;">❌ 오답만 보기</button>
+        <button class="btn btn-primary" id="resultReviewBtn">📖 전체 해설 보기</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Answers Modal -->
+  <div class="modal-backdrop" id="answersModal">
+    <div class="modal-panel">
+      <div class="modal-header">
+        <h3 id="modalExamTitle">📌 빠른 정답표 (1번 ~ 50번)</h3>
+        <button class="modal-close-btn" id="modalCloseBtn">&times;</button>
+      </div>
+      <div class="modal-body" id="modalTableBody">
+        <!-- Answer grid populated dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="app-footer">
+    <p>네트워크관리사 2급 필기 기출문제 완전 정복 시스템 | 수험생 눈높이 맞춤 초심자 해설 및 10초 컷 도출 로직 수록</p>
+  </footer>
+
+  <!-- Load Exam Database -->
+  <script src="data/exam_data.js"></script>
+
+  <!-- Application Logic -->
+  <script src="app.js"></script>
+</body>
+</html>
