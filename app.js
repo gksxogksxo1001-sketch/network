@@ -73,8 +73,10 @@
   const nextPageBtnBottom = $('nextPageBtnBottom');
   const viewModeToggleBtn = $('viewModeToggleBtn');
   const viewModeText = $('viewModeText');
+  const viewModeTextShort = $('viewModeTextShort');
   const toggleAllAnswersBtn = $('toggleAllAnswersBtn');
   const toggleAllBtnText = $('toggleAllBtnText');
+  const toggleAllBtnTextShort = $('toggleAllBtnTextShort');
   const quickAnswersBtn = $('quickAnswersBtn');
   const answersModal = $('answersModal');
   const modalCloseBtn = $('modalCloseBtn');
@@ -83,6 +85,7 @@
   const examModeBtn = $('examModeBtn');
   const examModeIcon = $('examModeIcon');
   const examModeText = $('examModeText');
+  const examModeTextShort = $('examModeTextShort');
   const examModeHint = $('examModeHint');
   const wrongOnlyTab = $('wrongOnlyTab');
   const submitPanel = $('submitPanel');
@@ -226,6 +229,7 @@
     viewModeToggleBtn.addEventListener('click', () => {
       isPagingMode = !isPagingMode;
       viewModeText.textContent = isPagingMode ? '한눈에 보기' : '페이지 분할 모드';
+      if (viewModeTextShort) viewModeTextShort.textContent = isPagingMode ? '한눈에' : '넘김';
       renderQuestions();
     });
 
@@ -233,6 +237,7 @@
       if (!isRevealed()) return;
       allExplanationsOpen = !allExplanationsOpen;
       toggleAllBtnText.textContent = allExplanationsOpen ? '해설 전체 닫기' : '해설 전체 열기';
+      if (toggleAllBtnTextShort) toggleAllBtnTextShort.textContent = allExplanationsOpen ? '닫기' : '해설';
       document.querySelectorAll('.explanation-wrapper').forEach(w => {
         w.classList.toggle('open', allExplanationsOpen);
         w.previousElementSibling.classList.toggle('open', allExplanationsOpen);
@@ -423,6 +428,7 @@
     examModeBtn.className = `btn ${isExamMode ? 'mode-exam' : 'mode-instant'}`;
     examModeIcon.textContent = isExamMode ? '📝' : '⚡';
     examModeText.textContent = isExamMode ? '시험 모드' : '즉시 채점 모드';
+    if (examModeTextShort) examModeTextShort.textContent = isExamMode ? '시험' : '즉시';
     examModeBtn.title = isExamMode
       ? '시험 모드: 50문항을 모두 푼 뒤 결과 확인으로 한 번에 채점 (클릭 시 즉시 채점 모드로 전환)'
       : '즉시 채점 모드: 보기를 고르면 바로 정답 공개 (클릭 시 시험 모드로 전환)';
@@ -434,6 +440,7 @@
     if (!revealed) {
       allExplanationsOpen = false;
       toggleAllBtnText.textContent = '해설 전체 열기';
+      if (toggleAllBtnTextShort) toggleAllBtnTextShort.textContent = '해설';
     }
 
     wrongOnlyTab.style.display = revealed && computeResult(exam()).answeredCount > 0 ? '' : 'none';
@@ -1150,19 +1157,17 @@
   function openQuickAnswersModal() {
     const ex = exam();
     modalExamTitle.textContent = `📌 ${ex.date} 빠른 정답표 (1번 ~ 50번)`;
-    let html = '<table class="answer-table"><thead><tr>';
-    for (let i = 0; i < 5; i++) html += '<th>번호</th><th>정답</th>';
-    html += '</tr></thead><tbody>';
-    for (let row = 0; row < 10; row++) {
-      html += '<tr>';
-      for (let col = 0; col < 5; col++) {
-        const qNum = col * 10 + row + 1;
-        const q = ex.questions.find(item => item.num === qNum);
-        html += `<td><strong>${qNum}</strong></td><td>${q ? q.answer : '-'}</td>`;
-      }
-      html += '</tr>';
+    let html = '<div class="quick-answers-grid">';
+    for (let i = 1; i <= 50; i++) {
+      const q = ex.questions.find(item => item.num === i);
+      const ansText = q ? q.answer : '-';
+      html += `
+        <div class="quick-answer-card">
+          <span class="q-num">${i}번</span>
+          <span class="q-ans">${ansText}</span>
+        </div>`;
     }
-    html += '</tbody></table>';
+    html += '</div>';
     modalTableBody.innerHTML = html;
     answersModal.classList.add('active');
   }
