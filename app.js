@@ -119,6 +119,7 @@
   const myHistoryModal = $('myHistoryModal');
   const historyCloseBtn = $('historyCloseBtn');
   const historyModalBody = $('historyModalBody');
+  const clearAllHistoryBtn = $('clearAllHistoryBtn');
 
   // Dedicated Review Viewer DOM
   const dedicatedReviewViewer = $('dedicatedReviewViewer');
@@ -911,6 +912,10 @@
   }
 
   function renderMyHistoryModal() {
+    if (clearAllHistoryBtn) {
+      clearAllHistoryBtn.style.display = (!cachedHistoryList || cachedHistoryList.length === 0) ? 'none' : 'inline-flex';
+    }
+
     if (!cachedHistoryList || cachedHistoryList.length === 0) {
       historyModalBody.innerHTML = `
         <div style="padding:60px 20px; text-align:center; color:var(--text-muted);">
@@ -948,9 +953,11 @@
         </div>
       </div>
 
-      <div class="result-section-title" style="margin-top:0; font-size:14px; font-weight:800; color:#1e293b; margin-bottom:12px;">
-        📅 내가 푼 회차별 시험 기록 (${totalExams}건)
-        <span style="font-size:12px; font-weight:500; color:var(--text-muted); margin-left:6px;">(회차 카드를 클릭하면 당시 풀었던 화면 그대로 복원됩니다)</span>
+      <div class="result-section-title" style="margin-top:0; font-size:14px; font-weight:800; color:#1e293b; margin-bottom:12px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px;">
+        <div>
+          📅 내가 푼 회차별 시험 기록 (${totalExams}건)
+          <span style="font-size:12px; font-weight:500; color:var(--text-muted); margin-left:6px;">(회차 카드를 클릭하면 당시 풀었던 화면 그대로 복원됩니다)</span>
+        </div>
       </div>
       <div class="history-list">`;
 
@@ -979,9 +986,15 @@
               <span class="history-score-num ${item.passed ? 'passed' : 'failed'}">${item.score}점</span>
               <span class="history-status-pill ${item.passed ? 'pass' : 'fail'}">${item.passed ? '합격' : '불합격'}</span>
             </div>
-            <div class="history-card-arrow">
-              <span>풀이 복원</span>
-              <span>➔</span>
+            <div class="history-actions-group">
+              <div class="history-card-arrow" title="당시 채점 화면 그대로 복원">
+                <span>풀이 복원</span>
+                <span>➔</span>
+              </div>
+              <button class="btn-delete-history" data-delete-exam="${item.examCode}" data-exam-name="${item.examDate}" title="이 회차 문제풀이 기록 삭제" type="button">
+                <span>🗑️</span>
+                <span>삭제</span>
+              </button>
             </div>
           </div>
         </div>`;
@@ -990,7 +1003,7 @@
     html += `</div>`;
     historyModalBody.innerHTML = html;
 
-    // Attach card click event to open dedicated review viewer (does not overwrite main test state)
+    // 회차 카드 클릭 시 독립 리뷰 뷰어로 이동
     historyModalBody.querySelectorAll('[data-restore-exam]').forEach(card => {
       card.addEventListener('click', () => {
         const code = card.getAttribute('data-restore-exam');
@@ -1000,6 +1013,67 @@
         }
       });
     });
+
+    // 개별 회차 풀이 삭제 버튼 이벤트 핸들러
+    historyModalBody.querySelectorAll('[data-delete-exam]').forEach(btn => {
+      btn.addEventListener('click', async (e) => {
+        e.stopPropagation(); // 카드 클릭(복원 뷰어) 전파 방지
+        const code = btn.getAttribute('data-delete-exam');
+        const name = btn.getAttribute('data-exam-name') || code;
+        if (!confirm(`'${name} (${code})'의 문제풀이 기록을 삭제하시겠습니까?\n해당 회차의 저장된 답안과 채점 결과가 완전히 삭제됩니다.`)) return;
+
+        btn.disabled = true;
+        btn.innerHTML = '<span>⏳</span> 삭제 중...';
+        try {
+          if (window.FirebaseManager && window.FirebaseManager.currentUser) {
+            await window.FirebaseManager.deleteExamResult(code);
+          }
+          // 로컬 스토리지 답안 및 제출 상태 정리
+          delete userAnswers[code];
+          delete submitted[code];
+          saveState();
+          refreshExamSelectLabel();
+
+          // 캐시 목록에서 제거 후 화면 갱신
+          cachedHistoryList = cachedHistoryList.filter(h => h.examCode !== code);
+          renderMyHistoryModal();
+        } catch (err) {
+          alert('기록 삭제 실패: ' + (err.message || err));
+          btn.disabled = false;
+          btn.innerHTML = '<span>🗑️</span> <span>삭제</span>';
+        }
+      });
+    });
+
+    // 전체 풀이 기록 초기화 버튼 이벤트 핸들러
+    if (clearAllHistoryBtn) {
+      clearAllHistoryBtn.onclick = async () => {
+        if (!confirm("지금까지 저장된 모든 회차의 문제풀이 기록을 영구히 삭제하시겠습니까?\n모든 회차의 성적과 답안 데이터가 초기화됩니다.")) return;
+
+        clearAllHistoryBtn.disabled = true;
+        clearAllHistoryBtn.innerHTML = '<span>⏳</span> 삭제 중...';
+        try {
+          if (window.FirebaseManager && window.FirebaseManager.currentUser) {
+            await window.FirebaseManager.clearAllHistory();
+          }
+          // 로컬 스토리지에 남아있는 모든 응시 기록 정리
+          cachedHistoryList.forEach(h => {
+            delete userAnswers[h.examCode];
+            delete submitted[h.examCode];
+          });
+          saveState();
+          refreshExamSelectLabel();
+
+          cachedHistoryList = [];
+          renderMyHistoryModal();
+        } catch (err) {
+          alert('전체 기록 삭제 실패: ' + (err.message || err));
+        } finally {
+          clearAllHistoryBtn.disabled = false;
+          clearAllHistoryBtn.innerHTML = '<span>🗑️</span> 전체 삭제';
+        }
+      };
+    }
   }
 
   // ---------- Dedicated Standalone Review Viewer ----------

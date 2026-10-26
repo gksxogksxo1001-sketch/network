@@ -138,5 +138,38 @@ window.FirebaseManager = {
     } catch (err) {
       console.error("오답 상태 갱신 실패:", err);
     }
+  },
+
+  // 특정 회차 응시 기록 삭제
+  async deleteExamResult(examCode) {
+    if (!auth || !auth.currentUser || !db) return false;
+    const uid = auth.currentUser.uid;
+    try {
+      await db.collection('users').doc(uid).collection('exam_results').doc(examCode).delete();
+      console.log(`[Firebase] ${examCode} 시험 기록 삭제 완료`);
+      return true;
+    } catch (err) {
+      console.error("시험 기록 삭제 실패:", err);
+      throw err;
+    }
+  },
+
+  // 모든 응시 기록 전체 삭제
+  async clearAllHistory() {
+    if (!auth || !auth.currentUser || !db) return false;
+    const uid = auth.currentUser.uid;
+    try {
+      const snap = await db.collection('users').doc(uid).collection('exam_results').get();
+      const batch = db.batch();
+      snap.docs.forEach(doc => {
+        batch.delete(doc.ref);
+      });
+      await batch.commit();
+      console.log(`[Firebase] 모든 시험 기록 삭제 완료`);
+      return true;
+    } catch (err) {
+      console.error("전체 시험 기록 삭제 실패:", err);
+      throw err;
+    }
   }
 };

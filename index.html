@@ -1129,6 +1129,55 @@
       border-color: var(--primary);
     }
 
+    .history-actions-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-delete-history {
+      background: #ffffff;
+      border: 1.5px solid #fecaca;
+      color: #ef4444;
+      padding: 7px 12px;
+      border-radius: var(--radius-sm);
+      font-size: 12.5px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: var(--transition);
+      white-space: nowrap;
+    }
+    .btn-delete-history:hover {
+      background: #fee2e2;
+      border-color: #ef4444;
+      color: #b91c1c;
+      transform: translateY(-1px);
+      box-shadow: 0 2px 5px rgba(239, 68, 68, 0.15);
+    }
+
+    .btn-clear-all-history {
+      background: #ffffff;
+      border: 1.5px solid #fca5a5;
+      color: #dc2626;
+      padding: 6px 14px;
+      border-radius: 9999px;
+      font-size: 12.5px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: var(--transition);
+    }
+    .btn-clear-all-history:hover {
+      background: #fee2e2;
+      border-color: #dc2626;
+      box-shadow: 0 2px 6px rgba(220, 38, 38, 0.15);
+    }
+
     /* ===== Exam Mode / Submit / Result ===== */
     .btn.mode-exam {
       background: linear-gradient(135deg, #7c3aed, #6366f1);
@@ -2048,12 +2097,17 @@
   <!-- My History Modal (내 문제풀이 대시보드) -->
   <div class="modal-backdrop" id="myHistoryModal">
     <div class="modal-panel history-panel" role="dialog" aria-labelledby="historyModalTitle">
-      <div class="modal-header">
+      <div class="modal-header" style="display:flex; align-items:center; justify-content:space-between; gap:12px;">
         <div>
           <h3 id="historyModalTitle" style="display:flex; align-items:center; gap:8px;">📋 내 문제풀이</h3>
           <p style="font-size:12.5px; color:var(--text-muted); margin-top:2px;">내가 풀었던 회차별 시험 기록입니다. 회차를 클릭하면 당시 풀었던 답안과 채점 화면 그대로 복원됩니다.</p>
         </div>
-        <button class="modal-close-btn" id="historyCloseBtn">&times;</button>
+        <div style="display:flex; align-items:center; gap:8px;">
+          <button class="btn-clear-all-history" id="clearAllHistoryBtn" type="button" title="모든 응시 기록 삭제" style="display:none;">
+            <span>🗑️</span> 전체 삭제
+          </button>
+          <button class="modal-close-btn" id="historyCloseBtn">&times;</button>
+        </div>
       </div>
       <div class="modal-body" id="historyModalBody">
         <!-- Dynamic content injected via app.js -->
