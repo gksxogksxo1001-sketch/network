@@ -59,15 +59,36 @@ function findKBEntry(text) {
     { regex: /active\s*directory/i, key: "Active Directory" },
     { regex: /raid\s*0\b/i, key: "RAID 0" },
     { regex: /raid\s*1\b/i, key: "RAID 1" },
+    { regex: /raid\s*2\b/i, key: "RAID 2" },
     { regex: /raid\s*3\b/i, key: "RAID 3" },
+    { regex: /raid\s*4\b/i, key: "RAID 4" },
     { regex: /raid\s*5\b/i, key: "RAID 5" },
+    { regex: /raid\s*6\b/i, key: "RAID 6" },
+    { regex: /adaptive\s*arq/i, key: "Adaptive ARQ" },
+    { regex: /stop.*wait/i, key: "Stop-and-Wait ARQ" },
+    { regex: /go.*back.*n/i, key: "Go-Back-N ARQ" },
+    { regex: /selective\s*repeat/i, key: "Selective Repeat ARQ" },
+    { regex: /csma\/cd/i, key: "CSMA/CD" },
+    { regex: /csma\/ca/i, key: "CSMA/CA" },
     { regex: /tracert|traceroute/i, key: "tracert" },
     { regex: /pathping/i, key: "pathping" },
     { regex: /\bipconfig\b/i, key: "ipconfig" },
     { regex: /\bnetstat\b/i, key: "netstat" },
     { regex: /\bchmod\b/i, key: "chmod" },
     { regex: /\bchown\b/i, key: "chown" },
+    { regex: /\bpwd\b/i, key: "pwd" },
+    { regex: /\bcat\b/i, key: "cat" },
+    { regex: /\bps\b/i, key: "ps" },
+    { regex: /\bshell\b|쉘/i, key: "Shell" },
+    { regex: /\bgrub\b/i, key: "GRUB" },
     { regex: /\bifconfig\b/i, key: "ifconfig" },
+    { regex: /^\/etc$/i, key: "/etc" },
+    { regex: /^\/bin$/i, key: "/bin" },
+    { regex: /^\/sbin$/i, key: "/sbin" },
+    { regex: /^\/lib$/i, key: "/lib" },
+    { regex: /^\/var$/i, key: "/var" },
+    { regex: /^\/proc$/i, key: "/proc" },
+    { regex: /^\/dev$/i, key: "/dev" },
     { regex: /\/etc\/passwd/i, key: "/etc/passwd" },
     { regex: /\/etc\/shadow/i, key: "/etc/shadow" },
     { regex: /\/etc\/hosts/i, key: "/etc/hosts" },
@@ -98,6 +119,7 @@ function findKBEntry(text) {
     { regex: /\brip\b/i, key: "RIP" },
     { regex: /\bospf\b/i, key: "OSPF" },
     { regex: /\bbgp\b/i, key: "BGP" },
+    { regex: /\begp\b/i, key: "EGP" },
     { regex: /\bicmp\b/i, key: "ICMP" },
     { regex: /\bigmp\b/i, key: "IGMP" },
     { regex: /\barp\b/i, key: "ARP" },
@@ -118,9 +140,22 @@ function findKBEntry(text) {
     { regex: /\bipv4\b/i, key: "IPv4" },
     { regex: /\btcp\b/i, key: "TCP" },
     { regex: /\budp\b/i, key: "UDP" },
+    { regex: /source\s*port|발신지\s*포트|송신\s*포트/i, key: "Source Port" },
+    { regex: /destination\s*port|목적지\s*포트|수신\s*포트/i, key: "Destination Port" },
+    { regex: /window\s*size|\bwindow\b|윈도우/i, key: "Window" },
+    { regex: /^\s*length\s*$|헤더\s*길이|데이터그램\s*길이/i, key: "Length" },
+    { regex: /checksum|체크섬/i, key: "Checksum" },
+    { regex: /sequence\s*number|순서\s*번호/i, key: "Sequence Number" },
+    { regex: /acknowledgment\s*number|확인\s*응답\s*번호/i, key: "Acknowledgment Number" },
+    { regex: /urgent\s*pointer|긴급\s*포인터/i, key: "Urgent Pointer" },
+    { regex: /\bnext\s*header\b/i, key: "Next Header" },
+    { regex: /\bhop\s*limit\b/i, key: "Hop Limit" },
+    { regex: /\btraffic\s*class\b/i, key: "Traffic Class" },
+    { regex: /\bflow\s*label\b/i, key: "Flow Label" },
+    { regex: /\bpriority\b/i, key: "Priority" },
+    { regex: /\bversion\b/i, key: "Version" },
     { regex: /\bheader\s*checksum\b/i, key: "Header checksum" },
     { regex: /\bheader\s*length\b/i, key: "Header length" },
-    { regex: /\bversion\b/i, key: "Version" },
     { regex: /\back\b/i, key: "ACK" },
     { regex: /\bsyn\b/i, key: "SYN" },
     { regex: /\bfin\b/i, key: "FIN" },
@@ -129,12 +164,20 @@ function findKBEntry(text) {
 
   for (const a of aliases) {
     if (a.regex.test(t)) {
-      return { name: a.key, ...KNOWLEDGE_BASE[a.key] };
+      if (KNOWLEDGE_BASE[a.key]) {
+        return { name: a.key, ...KNOWLEDGE_BASE[a.key] };
+      }
     }
   }
 
   for (const [key, val] of Object.entries(KNOWLEDGE_BASE)) {
-    if (key.length >= 3 && (lower === key.toLowerCase() || (key.length >= 5 && lower.includes(key.toLowerCase())))) {
+    if (lower === key.toLowerCase()) {
+      return { name: key, ...val };
+    }
+  }
+
+  for (const [key, val] of Object.entries(KNOWLEDGE_BASE)) {
+    if (key.length >= 3 && lower.includes(key.toLowerCase())) {
       return { name: key, ...val };
     }
   }
@@ -209,10 +252,27 @@ function parsePortOption(opt) {
     143: "IMAP(Internet Message Access Protocol) 메일 수신/동기화 포트입니다.",
     161: "SNMP(Simple Network Management Protocol) 관리자 질의(Polling) 포트입니다.",
     162: "SNMP Trap(에이전트 이상 징후 자발 통보) 수신 포트입니다.",
+    179: "BGP(Border Gateway Protocol) 라우팅 교환 표준 포트입니다.",
     443: "HTTPS(HTTP over SSL/TLS) 보안 웹 암호화 통신 포트입니다.",
-    445: "SMB/CIFS Windows 파일 및 프린터 공유 포트입니다."
+    445: "SMB/CIFS Windows 파일 및 프린터 공유 포트입니다.",
+    520: "RIP(Routing Information Protocol) 라우팅 광고 UDP 포트입니다."
   };
   return portMap[p] || null;
+}
+
+// Special parser: Class names (e.g., A Class, B Class)
+function parseClassOption(opt) {
+  const m = opt.match(/([A-E])\s*(class|클래스)/i);
+  if (!m) return null;
+  const c = m[1].toUpperCase();
+  const classMap = {
+    A: "A Class는 첫 번째 옥텟이 0~126이며 기본 서브넷 마스크는 255.0.0.0(/8)입니다.",
+    B: "B Class는 첫 번째 옥텟이 128~191이며 기본 서브넷 마스크는 255.255.0.0(/16)입니다.",
+    C: "C Class는 첫 번째 옥텟이 192~223이며 기본 서브넷 마스크는 255.255.255.0(/24)입니다.",
+    D: "D Class는 첫 번째 옥텟이 224~239이며 멀티캐스트(Multicast) 전용 주소입니다.",
+    E: "E Class는 첫 번째 옥텟이 240~255이며 연구·실험용으로 예약된 주소입니다."
+  };
+  return classMap[c] || null;
 }
 
 // Master explanation generator
@@ -224,8 +284,9 @@ function generateExplanation(q, examCode) {
 
   const stem = q.question.replace(/\s+/g, ' ').trim();
   const ansText = q.options[q.answerNum - 1].replace(/\s+/g, ' ').trim();
-  const isNegative = /옳지\s*않은|틀린|아닌\s*것|잘못된|포함되지\s*않는|없는\s*것|적절하지\s*않은|거리가\s*먼/i.test(stem);
-  const isPositive = /옳은|올바른|맞는\s*것|해당하는|가장\s*적절한|무엇인가|어느\s*것인가/i.test(stem);
+  
+  // Comprehensive negative question detection
+  const isNegative = /옳지\s*않은|틀린|아닌\s*것|잘못된|포함되지\s*않는|포함하지\s*않는|속하지\s*않는|해당하지\s*않는|없는\s*것|적절하지\s*않은|거리가\s*먼|관계없는|설명이\s*아닌|맞지\s*않는|제외한|부적절한|존재하지\s*않는|아닌\s*설명/i.test(stem);
 
   const lines = [];
 
@@ -248,11 +309,19 @@ function generateExplanation(q, examCode) {
       lines.push(`- **핵심 개념 정리 (${kbPrimary.name})**:`);
       lines.push(`  - **개념 정의**: ${kbPrimary.desc}`);
       lines.push(`  - **시험 출제 포인트**: ${kbPrimary.point}`);
-      lines.push(`- **정답 판정**: 지문의 설명 및 출제 기준에 정확히 일치하는 것은 **${ansText}**입니다.`);
+      if (isNegative) {
+        lines.push(`- **정답 판정**: 지문의 질문 기준에서 옳지 않거나(속하지 않는) 것은 **${ansText}**입니다.`);
+      } else {
+        lines.push(`- **정답 판정**: 지문의 설명 요건을 만족하는 올바른 정답은 **${ansText}**입니다.`);
+      }
     } else {
       lines.push(`- **핵심 문제 분석 및 정답 도출**:`);
       lines.push(`  - 문제 출제 영역: **${q.subject}**`);
-      lines.push(`  - 문제의 지문 요건을 종합 검토했을 때, 기술 표준 및 시험 정답 기준에 가장 정확하게 부합하는 것은 **${ansText}**입니다.`);
+      if (isNegative) {
+        lines.push(`  - 기술 표준 및 출제 기준상 옳지 않거나(조건에 부합하지 않는) 정답 선지는 **${ansText}**입니다.`);
+      } else {
+        lines.push(`  - 문제의 지문 요건을 종합 검토했을 때, 표준 규격과 시험 정답에 가장 정확하게 부합하는 것은 **${ansText}**입니다.`);
+      }
     }
   }
 
@@ -267,41 +336,53 @@ function generateExplanation(q, examCode) {
     const ipDesc = parseIPAddressOption(cleanOpt);
     const subnetDesc = parseSubnetMaskOption(cleanOpt);
     const portDesc = parsePortOption(cleanOpt);
+    const classDesc = parseClassOption(cleanOpt);
     const sym = ['①','②','③','④'][idx];
 
-    if (isCorrect) {
-      if (isNegative) {
-        lines.push(`  - ${sym} **${cleanOpt}** ✔️ **[정답 / 잘못된 설명]** ➔ 이 보기는 기술적 표준 사실과 어긋나는 명백한 오류 진술이므로 '옳지 않은 것'으로서 정답입니다.`);
-      } else {
-        if (entry) {
-          lines.push(`  - ${sym} **${cleanOpt}** ✔️ **[정답]** ➔ ${entry.desc}`);
-        } else if (ipDesc) {
-          lines.push(`  - ${sym} **${cleanOpt}** ✔️ **[정답]** ➔ ${ipDesc}`);
-        } else if (subnetDesc) {
-          lines.push(`  - ${sym} **${cleanOpt}** ✔️ **[정답]** ➔ ${subnetDesc}`);
-        } else if (portDesc) {
-          lines.push(`  - ${sym} **${cleanOpt}** ✔️ **[정답]** ➔ ${portDesc}`);
+    // Determine descriptive detail for this option
+    let optDetail = '';
+    if (entry) {
+      optDetail = entry.desc;
+    } else if (ipDesc) {
+      optDetail = ipDesc;
+    } else if (subnetDesc) {
+      optDetail = subnetDesc;
+    } else if (portDesc) {
+      optDetail = portDesc;
+    } else if (classDesc) {
+      optDetail = classDesc;
+    }
+
+    if (isNegative) {
+      // Negative question: Finding the WRONG/EXCLUDED item
+      if (isCorrect) {
+        if (optDetail) {
+          lines.push(`  - ${sym} **${cleanOpt}** ✔️ **[정답 / 옳지 않음]** ➔ ${optDetail} (이 선지는 질문의 조건에 속하지 않거나 오류 진술이므로 '옳지 않은 것'으로서 정답입니다)`);
         } else {
-          lines.push(`  - ${sym} **${cleanOpt}** ✔️ **[정답]** ➔ 질문에서 요구하는 표준 동작 및 기술적 정의에 완벽히 부합하는 올바른 설명입니다.`);
+          lines.push(`  - ${sym} **${cleanOpt}** ✔️ **[정답 / 잘못된 기술 설명]** ➔ 이 선지는 해당 기술의 실제 표준 동작 및 원리와 어긋나는 명백한 오류 진술이므로 '옳지 않은 것'으로서 정답입니다.`);
+        }
+      } else {
+        // Option is actually correct in reality, so it's a WRONG answer for a negative question
+        if (optDetail) {
+          lines.push(`  - ${sym} ${cleanOpt} ❌ **[오답 / 올바른 규격]** ➔ ${optDetail} (해당 기술의 정상 규격에 부합하므로 '옳지 않은 것'을 찾는 정답이 아닙니다)`);
+        } else {
+          lines.push(`  - ${sym} ${cleanOpt} ❌ **[오답 / 올바른 표준 설명]** ➔ 대상 기술의 규격과 역할을 정확하게 설명하고 있으므로 '옳지 않은 것'을 찾는 문제의 정답이 아닙니다.`);
         }
       }
     } else {
-      // Wrong options
-      if (isNegative) {
-        lines.push(`  - ${sym} ${cleanOpt} ❌ **[오답 / 올바른 표준 설명]** ➔ 해당 기술의 표준 동작 및 규격을 정확히 설명하고 있으므로 '옳지 않은 것'을 찾는 정답이 아닙니다.`);
-      } else {
-        if (entry) {
-          lines.push(`  - ${sym} ${cleanOpt} ❌ **[오답]** ➔ ${entry.desc} (문제에서 요구하는 기술과 일치하지 않아 오답입니다)`);
-        } else if (ipDesc) {
-          lines.push(`  - ${sym} ${cleanOpt} ❌ **[오답]** ➔ ${ipDesc} (문제 조건과 다른 클래스/대역이므로 오답입니다)`);
-        } else if (subnetDesc) {
-          lines.push(`  - ${sym} ${cleanOpt} ❌ **[오답]** ➔ ${subnetDesc} (문제에서 요구하는 호스트 수/서브넷 조건과 일치하지 않습니다)`);
-        } else if (portDesc) {
-          lines.push(`  - ${sym} ${cleanOpt} ❌ **[오답]** ➔ ${portDesc} (문제에서 묻는 프로토콜의 포트가 아니므로 오답입니다)`);
-        } else if (cleanOpt.length > 20) {
-          lines.push(`  - ${sym} ${cleanOpt} ❌ **[오답]** ➔ 기술 표준과 맞지 않는 오류 진술이거나 다른 대상에 대한 설명이므로 오답입니다.`);
+      // Positive question: Finding the CORRECT item
+      if (isCorrect) {
+        if (optDetail) {
+          lines.push(`  - ${sym} **${cleanOpt}** ✔️ **[정답]** ➔ ${optDetail}`);
         } else {
-          lines.push(`  - ${sym} ${cleanOpt} ❌ **[오답]** ➔ 문제에서 묻는 기술적 범주 및 정의와 일치하지 않습니다.`);
+          lines.push(`  - ${sym} **${cleanOpt}** ✔️ **[정답]** ➔ 문제의 질문 조건과 기술 표준 정의를 정확하게 만족하는 올바른 설명입니다.`);
+        }
+      } else {
+        // Wrong options
+        if (optDetail) {
+          lines.push(`  - ${sym} ${cleanOpt} ❌ **[오답]** ➔ ${optDetail} (문제에서 요구하는 핵심 조건과 일치하지 않아 오답입니다)`);
+        } else {
+          lines.push(`  - ${sym} ${cleanOpt} ❌ **[오답]** ➔ 문제에서 요구하는 핵심 조건과 다르거나 다른 기술/개념에 대한 진술이므로 오답입니다.`);
         }
       }
     }

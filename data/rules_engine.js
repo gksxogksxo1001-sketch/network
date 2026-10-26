@@ -88,6 +88,20 @@ const QUESTION_RULES = [
     derive: ans => `TCP와 UDP의 신뢰성 및 연결 특성을 비교하면 **${ans}**가 정답입니다.`
   },
   {
+    id: "udp_header_fields",
+    match: q => /UDP.*(헤더|패킷|구조)/i.test(q.stem),
+    topic: "UDP 헤더 구조 (총 8바이트 = 64비트 고정)",
+    icon: "⚡",
+    points: [
+      "UDP 헤더 4대 필드: **Source Port(16비트), Destination Port(16비트), Length(16비트), Checksum(16비트)**",
+      "헤더 총 크기: 8바이트 (TCP 헤더 기본 20바이트에 비해 극도로 경량화되어 신속 전송 지원)",
+      "Window(흐름제어 윈도우 크기), Sequence Number(순서번호), ACK(확인응답)는 **TCP 전용 필드**로 UDP에는 존재하지 않음",
+      "비연결형 프로토콜 특성상 가상회선 수립(3-Way Handshake) 및 흐름/순서 제어 메커니즘이 전혀 없음"
+    ],
+    derive: ans => `UDP 헤더 4대 필드(송신 포트, 수신 포트, 길이, 체크섬)에 속하지 않는 것은 **${ans}**입니다.`,
+    trap: "Window, ACK, SYN, FIN 등은 모두 신뢰성 전송을 위한 TCP 고유 필드이므로 UDP 헤더 문제의 단골 오답/정답 함정입니다."
+  },
+  {
     id: "tcp_flags_fields",
     match: q => /ACK|SYN|FIN|RST|URG|PSH|헤더\s*필드|Header\s*length|Header\s*checksum|Sequence\s*Number/i.test(q.stem) || /ACK|SYN|FIN|RST/i.test(q.ans),
     topic: "TCP / IP 헤더 제어 플래그 및 필드 역할",
