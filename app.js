@@ -634,8 +634,12 @@
     let cls = 'option-item';
     const isAnswered = chosen !== undefined;
     if (revealed) {
-      if ((isAnswered || isSubmitted()) && optNum === answerNum) cls += ' is-correct';
-      else if (isAnswered && optNum === chosen) cls += ' is-wrong';
+      if (isAnswered) {
+        if (optNum === answerNum) cls += ' is-correct';
+        else if (optNum === chosen) cls += ' is-wrong';
+      } else if (isSubmitted() && optNum === answerNum) {
+        cls += ' is-correct';
+      }
     } else if (optNum === chosen) {
       cls += ' selected';
     }
@@ -693,27 +697,47 @@
     if (isExamMode && isSubmitted()) return;
 
     const answers = answersOf(ex.code);
-    answers[q.num] = optNum;
+    const currentChoice = answers[q.num];
+
+    // 같은 보기를 다시 클릭하면 선택 해제(토글), 다른 보기를 누르면 변경
+    if (currentChoice === optNum) {
+      delete answers[q.num];
+    } else {
+      answers[q.num] = optNum;
+    }
     saveState();
 
+    const newChoice = answers[q.num];
     const card = $(`qCard_${q.num}`);
     if (card) {
       const revealed = isRevealed();
       card.querySelectorAll('.option-item').forEach(el => {
-        el.className = optionClass(parseInt(el.getAttribute('data-opt'), 10), optNum, q.answerNum, revealed);
+        const itemOpt = parseInt(el.getAttribute('data-opt'), 10);
+        el.className = optionClass(itemOpt, newChoice, q.answerNum, revealed);
       });
-      const badge = statusBadge(optNum, q.answerNum, revealed);
+      const badge = statusBadge(newChoice, q.answerNum, revealed);
       const badgeEl = card.querySelector(`#status_${q.num}`);
-      badgeEl.className = `q-status-badge ${badge.cls}`;
-      badgeEl.textContent = badge.text;
+      if (badgeEl) {
+        badgeEl.className = `q-status-badge ${badge.cls}`;
+        badgeEl.textContent = badge.text;
+      }
 
-      if (revealed) {
-        card.querySelector(`#expWrapper_${q.num}`).classList.add('open');
-        card.querySelector(`#toggleBtn_${q.num}`).classList.add('open');
+      const expWrapper = card.querySelector(`#expWrapper_${q.num}`);
+      const toggleBtn = card.querySelector(`#toggleBtn_${q.num}`);
+      if (expWrapper && toggleBtn) {
+        if (revealed && newChoice !== undefined) {
+          expWrapper.classList.add('open');
+          toggleBtn.classList.add('open');
+          expWrapper.style.display = '';
+          toggleBtn.style.display = '';
+        } else if (newChoice === undefined) {
+          expWrapper.classList.remove('open');
+          toggleBtn.classList.remove('open');
+        }
       }
     }
 
-    if (!isExamMode) {
+    if (wrongOnlyTab) {
       wrongOnlyTab.style.display = '';
     }
     updateScoreBar();
