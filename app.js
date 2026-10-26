@@ -148,13 +148,97 @@
 
   function formatMarkdown(text) {
     if (!text) return '';
-    return text
+
+    const inline = str => str
       .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
       .replace(/\*(.*?)\*/g, '<em>$1</em>')
-      .replace(/`(.*?)`/g, '<code>$1</code>')
-      .replace(/\n/g, '<br>')
-      .replace(/<br>- /g, '<br>• ');
+      .replace(/`(.*?)`/g, '<code>$1</code>');
+
+    const lines = text.split('\n');
+    let html = '';
+    let inOptionsList = false;
+
+    lines.forEach(rawLine => {
+      const line = rawLine.trim();
+      if (!line) return;
+
+      // 1. 선지별 항목 (예: - ① **tracert** ✔️ [정답] ➔ ...)
+      const optMatch = line.match(/^[-*]?\s*([①②③④])\s*(.*)$/);
+      if (optMatch) {
+        if (!inOptionsList) {
+          html += '<div class="exp-options-grid">';
+          inOptionsList = true;
+        }
+        const sym = optMatch[1];
+        const content = optMatch[2];
+        const isAnswer = content.includes('✔️') || content.includes('[정답]');
+        const cleanContent = content
+          .replace(/✔️\s*\[정답.*?\]\s*➔?\s*/, '')
+          .replace(/❌\s*\[오답.*?\]\s*➔?\s*/, '');
+
+        html += `
+          <div class="exp-option-item ${isAnswer ? 'is-answer' : 'is-wrong'}">
+            <span class="exp-opt-badge ${isAnswer ? 'badge-answer' : 'badge-wrong'}">${sym} ${isAnswer ? '정답' : '오답'}</span>
+            <div class="exp-opt-desc">${inline(cleanContent)}</div>
+          </div>`;
+        return;
+      }
+
+      // 선지 리스트가 끝났으면 닫아주기
+      if (inOptionsList) {
+        html += '</div>';
+        inOptionsList = false;
+      }
+
+      // 2. 들여쓰기된 서브 항목 (예:   - **개념 정의**: ...)
+      const subHeaderMatch = rawLine.match(/^\s+[-*]\s*\*\*(.*?)\*\*:\s*(.*)$/);
+      if (subHeaderMatch) {
+        const subTitle = subHeaderMatch[1];
+        const subText = subHeaderMatch[2];
+        html += `<div class="exp-bullet-item sub-point"><span class="sub-point-badge">${subTitle}</span><span class="bullet-text">${inline(subText)}</span></div>`;
+        return;
+      }
+
+      // 3. 메인 섹션 타이틀 (예: - **핵심 10초 컷 도출 공식...**: )
+      const headerMatch = rawLine.match(/^[-*]\s*\*\*(.*?)\*\*:\s*(.*)$/);
+      if (headerMatch) {
+        const title = headerMatch[1];
+        const extra = headerMatch[2];
+        let icon = '💡';
+        if (title.includes('서브넷') || title.includes('10초 컷') || title.includes('공식')) icon = '⚡';
+        else if (title.includes('정답 판정') || title.includes('도출')) icon = '🎯';
+        else if (title.includes('선지별') || title.includes('분석')) icon = '📋';
+        else if (title.includes('클래스') || title.includes('포트') || title.includes('OSI') || title.includes('IPv6')) icon = '📌';
+
+        html += `
+          <div class="exp-section-title">
+            <span class="sec-icon">${icon}</span>
+            <span class="sec-text">${title}</span>
+          </div>`;
+        if (extra) {
+          html += `<div class="exp-lead-text">${inline(extra)}</div>`;
+        }
+        return;
+      }
+
+      // 4. 서브 불릿 항목
+      if (line.startsWith('- ') || line.startsWith('• ') || line.startsWith('* ')) {
+        const bulletText = line.replace(/^[-*•]\s*/, '');
+        html += `<div class="exp-bullet-item"><span class="bullet-dot">•</span><span class="bullet-text">${inline(bulletText)}</span></div>`;
+        return;
+      }
+
+      // 5. 일반 문단
+      html += `<p class="exp-paragraph">${inline(line)}</p>`;
+    });
+
+    if (inOptionsList) {
+      html += '</div>';
+    }
+
+    return html;
   }
+
 
   function computeResult(ex) {
     const answered = answersOf(ex.code);
@@ -594,8 +678,8 @@
       <div class="explanation-wrapper ${expOpen ? 'open' : ''}" id="expWrapper_${q.num}" style="${revealed ? '' : 'display:none;'}">
         <div class="explanation-box">
           <div class="ans-highlight">
-            <span>🎯 정답:</span>
-            <span>${q.answer} ${q.options[q.answerNum - 1] || ''}</span>
+            <span class="ans-label">🎯 정답</span>
+            <span class="ans-val">${q.answer} ${q.options[q.answerNum - 1] || ''}</span>
           </div>
           <div class="exp-content">${formatMarkdown(q.explanation)}</div>
         </div>
